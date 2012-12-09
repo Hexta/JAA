@@ -1,3 +1,0 @@
-FILE(REMOVE_RECURSE
-  "libJAA_crc.a"
-)

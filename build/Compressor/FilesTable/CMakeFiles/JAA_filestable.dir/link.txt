@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_filestable.a  CMakeFiles/JAA_filestable.dir/fileBlocksInfo.cpp.o CMakeFiles/JAA_filestable.dir/filesTable.cpp.o
-/usr/bin/ranlib libJAA_filestable.a

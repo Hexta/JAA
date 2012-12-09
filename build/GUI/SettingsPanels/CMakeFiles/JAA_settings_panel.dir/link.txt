@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_settings_panel.a  CMakeFiles/JAA_settings_panel.dir/compressSettingsPanel.cpp.o CMakeFiles/JAA_settings_panel.dir/decompressSetingsPanel.cpp.o CMakeFiles/JAA_settings_panel.dir/moc_compressSettingsPanel.cxx.o CMakeFiles/JAA_settings_panel.dir/moc_decompressSetingsPanel.cxx.o
-/usr/bin/ranlib libJAA_settings_panel.a

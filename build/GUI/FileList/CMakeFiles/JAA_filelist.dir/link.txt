@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_filelist.a  CMakeFiles/JAA_filelist.dir/fileList.cpp.o CMakeFiles/JAA_filelist.dir/moc_fileList.cxx.o
-/usr/bin/ranlib libJAA_filelist.a

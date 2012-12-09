@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_stw.a  CMakeFiles/JAA_stw.dir/statInfoW.cpp.o CMakeFiles/JAA_stw.dir/moc_statInfoW.cxx.o
-/usr/bin/ranlib libJAA_stw.a

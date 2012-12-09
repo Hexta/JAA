@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_dus.a  CMakeFiles/JAA_dus.dir/dataUnitsToQString.cpp.o
-/usr/bin/ranlib libJAA_dus.a

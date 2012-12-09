@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_codec.a  CMakeFiles/JAA_codec.dir/codecAbstract.cpp.o CMakeFiles/JAA_codec.dir/codec.cpp.o
-/usr/bin/ranlib libJAA_codec.a

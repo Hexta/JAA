@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_divsuf.a  CMakeFiles/JAA_divsuf.dir/divsufsort.cpp.o CMakeFiles/JAA_divsuf.dir/sssort.cpp.o CMakeFiles/JAA_divsuf.dir/trsort.cpp.o
-/usr/bin/ranlib libJAA_divsuf.a

@@ -1,2 +1,0 @@
-/usr/bin/ar cr libJAA_codec_bwt.a  CMakeFiles/JAA_codec_bwt.dir/codecBWT.cpp.o
-/usr/bin/ranlib libJAA_codec_bwt.a

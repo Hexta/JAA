@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_codec_rle.a  CMakeFiles/JAA_codec_rle.dir/codecRLE.cpp.o
+/usr/bin/ranlib libJAA_codec_rle.a

@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_codec_mtf.a  CMakeFiles/JAA_codec_mtf.dir/codecMTF.cpp.o
+/usr/bin/ranlib libJAA_codec_mtf.a

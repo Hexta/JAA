@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_compressor.a  CMakeFiles/JAA_compressor.dir/compressor.cpp.o
+/usr/bin/ranlib libJAA_compressor.a

@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_datablock.a  CMakeFiles/JAA_datablock.dir/dataBlock.cpp.o CMakeFiles/JAA_datablock.dir/dataBlockHeader.cpp.o CMakeFiles/JAA_datablock.dir/readerDataBlockHeader.cpp.o
+/usr/bin/ranlib libJAA_datablock.a

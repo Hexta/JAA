@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/temp/source/Compressor/CRC/crc.cpp
+crc.h
+/mnt/temp/source/Compressor/CRC/crc.h
+stddef.h
+-
+stdint.h
+-
+
+/mnt/temp/source/Compressor/CRC/crc.h
+stdint.h
+-
+cstdlib
+-
+

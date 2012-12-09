@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/temp/source/GUI/DataUnitsToQString/dataUnitsToQString.cpp
+dataUnitsToQString.h
+/mnt/temp/source/GUI/DataUnitsToQString/dataUnitsToQString.h
+
+/mnt/temp/source/GUI/DataUnitsToQString/dataUnitsToQString.h
+QString
+-
+
+/usr/include/QtCore/QString
+qstring.h
+/usr/include/QtCore/qstring.h
+
+/usr/include/QtCore/qstring.h
+QtCore/qchar.h
+-
+QtCore/qbytearray.h
+-
+QtCore/qatomic.h
+-
+QtCore/qnamespace.h
+-
+Qt3Support/q3cstring.h
+-
+string
+-
+stdarg.h
+-
+QtCore/qstringbuilder.h
+-
+

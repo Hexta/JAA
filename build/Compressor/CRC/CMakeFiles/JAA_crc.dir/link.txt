@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_crc.a  CMakeFiles/JAA_crc.dir/crc.cpp.o
+/usr/bin/ranlib libJAA_crc.a

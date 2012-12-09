@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_ct.a  CMakeFiles/JAA_ct.dir/compressorThread.cpp.o CMakeFiles/JAA_ct.dir/moc_compressorThread.cxx.o
+/usr/bin/ranlib libJAA_ct.a

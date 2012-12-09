@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+3efad1347b29fcaaf32a6cf2d3590efc ui_face.h

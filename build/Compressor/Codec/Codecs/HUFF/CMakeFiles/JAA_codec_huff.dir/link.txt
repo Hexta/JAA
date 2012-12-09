@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_codec_huff.a  CMakeFiles/JAA_codec_huff.dir/codecHUFF.cpp.o CMakeFiles/JAA_codec_huff.dir/shclib.cpp.o
+/usr/bin/ranlib libJAA_codec_huff.a

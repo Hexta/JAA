@@ -1,0 +1,2 @@
+/usr/bin/ar cr libJAA_face.a  CMakeFiles/JAA_face.dir/face.cpp.o CMakeFiles/JAA_face.dir/moc_face.cxx.o
+/usr/bin/ranlib libJAA_face.a

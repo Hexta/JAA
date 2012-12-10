@@ -14,10 +14,10 @@
  */
 
 #ifndef SHCLIB_H
-#    define SHCLIB_H
+#define SHCLIB_H
 
 typedef unsigned char uchar;
-typedef unsigned int  uint;
+typedef unsigned int uint;
 
 /*
  *  Encode bSize bytes from iBlock to oBlock and
@@ -26,9 +26,9 @@ typedef unsigned int  uint;
  *  iBlock size + 256 (for code tree stuff)
  */
 
-int sh_EncodeBlock( uchar *iBlock,
-					uchar *oBlock,
-					unsigned int bSize );
+int sh_EncodeBlock(uchar *iBlock,
+    uchar *oBlock,
+    unsigned int bSize);
 
 /*
  *  Decode bSize bytes from iBlock to oBlock and return
@@ -39,8 +39,8 @@ int sh_EncodeBlock( uchar *iBlock,
  *  stream size(i.e. length of original message).
  */
 
-int sh_DecodeBlock( uchar *iBlock,
-					uchar *oBlock,
-					int bSize );
+int sh_DecodeBlock(uchar *iBlock,
+    uchar *oBlock,
+    int bSize);
 
 #endif /* SHCLIB_H */

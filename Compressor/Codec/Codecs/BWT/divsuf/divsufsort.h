@@ -25,8 +25,8 @@
  */
 
 #ifndef _DIVSUFSORT_H
-#    define _DIVSUFSORT_H
-#    include <inttypes.h>
+#define _DIVSUFSORT_H
+#include <inttypes.h>
 
 /*- Prototypes -*/
 
@@ -64,8 +64,8 @@ divbwt(const uint8_t *T, uint8_t *U, int32_t *A, int32_t n);
 
 int32_t
 bw_transform(const uint8_t *T, uint8_t *U,
-			 int32_t *SA /* can NULL */,
-			 int32_t n, int32_t *idx);
+    int32_t *SA /* can NULL */,
+    int32_t n, int32_t *idx);
 
 /**
  * Inverse BW-transforms a given BWTed string.
@@ -79,8 +79,8 @@ bw_transform(const uint8_t *T, uint8_t *U,
 
 int32_t
 inverse_bw_transform(const uint8_t *T, uint8_t *U,
-					 int32_t *A /* can NULL */,
-					 int32_t n, int32_t idx);
+    int32_t *A /* can NULL */,
+    int32_t n, int32_t idx);
 
 /**
  * Checks the correctness of a given suffix array.
@@ -108,9 +108,9 @@ sufcheck(const uint8_t *T, const int32_t *SA, int32_t n, int32_t verbose);
 
 int32_t
 sa_search(const uint8_t *T, int32_t Tsize,
-		  const uint8_t *P, int32_t Psize,
-		  const int32_t *SA, int32_t SAsize,
-		  int32_t *left);
+    const uint8_t *P, int32_t Psize,
+    const int32_t *SA, int32_t SAsize,
+    int32_t *left);
 
 /**
  * Search for the character c in the string T.
@@ -125,7 +125,7 @@ sa_search(const uint8_t *T, int32_t Tsize,
 
 int32_t
 sa_simplesearch(const uint8_t *T, int32_t Tsize,
-				const int32_t *SA, int32_t SAsize,
-				int32_t c, int32_t *left);
+    const int32_t *SA, int32_t SAsize,
+    int32_t c, int32_t *left);
 
 #endif /* _DIVSUFSORT_H */

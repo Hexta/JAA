@@ -6,43 +6,42 @@
  */
 
 #ifndef STATINFOW_H
-#    define	STATINFOW_H
+#define	STATINFOW_H
 
-#    include "QDialog"
-#    include "Compressor/compressor.h"
+#include "QDialog"
+#include "Compressor/compressor.h"
 
 class QTableWidget;
 
 class QLabel;
 
-class StatInfoW : public QDialog
-{
+class StatInfoW : public QDialog {
 
-    Q_OBJECT
+  Q_OBJECT
+
 public:
-    struct StatInfo
-    {
-        QList< Compressor::CoderTypes> compressSequence;
-        unsigned int blockSize;
-        off_t inputSize;
-        off_t outputSize;
-        float speed;
-    } ;
-    StatInfoW( QWidget *parent = NULL );
-    virtual ~ StatInfoW( );
+  struct StatInfo {
+    QList< Compressor::CoderTypes> compressSequence;
+    unsigned int blockSize;
+    off_t inputSize;
+    off_t outputSize;
+    float speed;
+  };
+  StatInfoW(QWidget *parent = NULL);
+  virtual ~StatInfoW();
+
 public slots:
-    void            showInfo( StatInfo info );
+  void showInfo(StatInfo info);
+
 private:
-    QLabel          *blockSizeLabel;
-    QLabel          *inputDataSizeLabel;
-    QLabel          *outputDataSizeLabel;
-    QLabel          *ratioLabel;
-    QLabel          *speedLabel;
-    QLabel          *encodingSequenceLabel;
-    QLabel          *encodingSequenceColumnLabel;
-
-
-} ;
+  QLabel *blockSizeLabel;
+  QLabel *inputDataSizeLabel;
+  QLabel *outputDataSizeLabel;
+  QLabel *ratioLabel;
+  QLabel *speedLabel;
+  QLabel *encodingSequenceLabel;
+  QLabel *encodingSequenceColumnLabel;
+};
 
 #endif	/* STATINFOW_H */
 

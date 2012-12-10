@@ -8,35 +8,29 @@
 #include "codecHUFF.h"
 #include "shclib.h"
 
-Codec_HUFF::Codec_HUFF()
-{
-}
+Codec_HUFF::Codec_HUFF() { }
 
-Codec_HUFF::~Codec_HUFF()
-{
+Codec_HUFF::~Codec_HUFF() { }
+
+void
+Codec_HUFF::decode_HUFF(DataBlock* inData) {
+  initDecoder(inData);
+
+  dataT buffer(decodedDataSize);
+
+  sh_DecodeBlock(data, buffer.data(), encodedDataSize);
+
+  inData->setBlock(buffer.data());
 }
 
 void
-Codec_HUFF::decode_HUFF( DataBlock* inData )
-{
-	initDecoder( inData );
+Codec_HUFF::encode_HUFF(DataBlock* inData) {
+  initEncoder(inData);
+  dataT buffer(decodedDataSize + 256);
 
-	dataT buffer( decodedDataSize );
+  encodedDataSize = sh_EncodeBlock(data, buffer.data(), decodedDataSize);
 
-	sh_DecodeBlock( data, buffer.data(), encodedDataSize );
-
-	inData->setBlock( buffer.data() );
-}
-
-void
-Codec_HUFF::encode_HUFF( DataBlock* inData )
-{
-	initEncoder( inData );
-	dataT buffer( decodedDataSize + 256 );
-
-	encodedDataSize = sh_EncodeBlock( data, buffer.data( ), decodedDataSize );
-
-	inData->setData( buffer.data( ), encodedDataSize );
-	recordOutHeader( inData->getHeader( ), HUFF_ID );
+  inData->setData(buffer.data(), encodedDataSize);
+  recordOutHeader(inData->getHeader(), HUFF_ID);
 }
 

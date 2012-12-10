@@ -6,29 +6,26 @@
  */
 
 #ifndef READERDATABLOCKHEADER_H
-#    define	READERDATABLOCKHEADER_H
+#define	READERDATABLOCKHEADER_H
 
-#    include <fstream>
-#    include "QFile"
+#include <fstream>
+#include "QFile"
 
 class DataBlockHeader;
 
-class ReaderDataBlockHeader
-{
+class ReaderDataBlockHeader {
 public:
-	ReaderDataBlockHeader( );
+  ReaderDataBlockHeader();
 
-	ReaderDataBlockHeader( const ReaderDataBlockHeader& orig );
+  ReaderDataBlockHeader(const ReaderDataBlockHeader& orig);
 
-	virtual	~ ReaderDataBlockHeader( );
+  virtual ~ReaderDataBlockHeader();
 
-	int				read( DataBlockHeader * outHeader, QFile &in, bool searchHeader = false );
+  int read(DataBlockHeader * outHeader, QFile &in, bool searchHeader = false);
 
 private:
-
-	bool			find ( DataBlockHeader *outHeader, QFile &fin);
-
-} ;
+  bool find(DataBlockHeader *outHeader, QFile &fin);
+};
 
 #endif	/* READERDATABLOCKHEADER_H */
 

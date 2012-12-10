@@ -6,34 +6,36 @@
  */
 
 #ifndef DECOMPRESSSETTINGSPANEL_H
-#    define	DECOMPRESSSETTINGSPANEL_H
+#define	DECOMPRESSSETTINGSPANEL_H
 
-#    include <QWidget>
-#    include "Compressor/compressor.h"
+#include <QWidget>
+#include "Compressor/compressor.h"
 
 class QCheckBox;
 
-class DecompressSettingsPanel : public QWidget
-{
-    Q_OBJECT
+class DecompressSettingsPanel : public QWidget {
+  Q_OBJECT
+
 public:
-    DecompressSettingsPanel( );
-    virtual ~ DecompressSettingsPanel( );
+  DecompressSettingsPanel();
+  virtual ~DecompressSettingsPanel();
 
 public slots:
-    void        set( bool keepBroken );
-signals:
-    void        settingsChanged( bool keepBroken );
-    void        resetToDefaults( void );
-private:
-    QCheckBox   *keepBrokenFilesCheckbox;
+  void set(bool keepBroken);
 
-    void        setupWidgetsConnections( );
+signals:
+  void settingsChanged(bool keepBroken);
+  void resetToDefaults(void);
+
+private:
+  QCheckBox *keepBrokenFilesCheckbox;
+
+  void setupWidgetsConnections();
 
 private slots:
-    void        get( );
+  void get();
 
-} ;
+};
 
 #endif	/* DECOMPRESSSETTINGSPANEL_H */
 

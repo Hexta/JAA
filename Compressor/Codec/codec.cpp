@@ -7,11 +7,6 @@
 
 #include "codec.h"
 
-Codec::Codec()
-{
-}
+Codec::Codec() { }
 
-Codec::~Codec()
-{
-}
-
+Codec::~Codec() { }

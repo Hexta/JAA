@@ -14,23 +14,23 @@
  */
 
 #ifndef SHC_H
-#    define SHC_H
+#define SHC_H
 
 /* Types */
 
 typedef unsigned char uchar;
-typedef unsigned int  uint;
+typedef unsigned int uint;
 
 /* Constants */
 
-#    define SH_MAX_ALPHA (256)
-#    define SH_MAX_CLEN  (31)
-#    define SH_CACHEBITS (8)
-#    define SH_CACHESIZE (1<<SH_CACHEBITS)
+#define SH_MAX_ALPHA (256)
+#define SH_MAX_CLEN  (31)
+#define SH_CACHEBITS (8)
+#define SH_CACHESIZE (1<<SH_CACHEBITS)
 
 /* Prototypes */
 
-void sh_GetFreq( int *freq, uchar *block, int size );
+void sh_GetFreq(int *freq, uchar *block, int size);
 
 /*  Function: sh_GetFreq()
  *  Purpose: get symbol frequencies
@@ -40,7 +40,7 @@ void sh_GetFreq( int *freq, uchar *block, int size );
  *  Notes: none
  */
 
-int sh_SortFreq( int *freq, uchar *symb );
+int sh_SortFreq(int *freq, uchar *symb);
 
 /*  Function: sh_SortFreq()
  *  Purpose: sort symbols by frequency
@@ -49,7 +49,7 @@ int sh_SortFreq( int *freq, uchar *symb );
  *  Notes: none
  */
 
-void sh_CalcLen( int *freq, uchar *symb, uchar *len, int n, int maxLen );
+void sh_CalcLen(int *freq, uchar *symb, uchar *len, int n, int maxLen);
 
 /*  Function: sh_CalcLen()
  *  Purpose: calculate code lengths
@@ -61,7 +61,7 @@ void sh_CalcLen( int *freq, uchar *symb, uchar *len, int n, int maxLen );
  *  Notes: len must be overlaid on (uchar *)freq
  */
 
-void sh_SortLen( uchar *len, uchar *symb, int n );
+void sh_SortLen(uchar *len, uchar *symb, int n);
 
 /*  Function: sh_SortLen()
  *  Purpose: sort symbols by code length and actual value
@@ -71,7 +71,7 @@ void sh_SortLen( uchar *len, uchar *symb, int n );
  *  Notes: none
  */
 
-void sh_CalcCode( uchar *len, uchar *symb, uchar *code, int n );
+void sh_CalcCode(uchar *len, uchar *symb, uchar *code, int n);
 
 /*  Function: sh_CalcCode()
  *  Purpose: calculate canonical huffman codes
@@ -81,7 +81,7 @@ void sh_CalcCode( uchar *len, uchar *symb, uchar *code, int n );
  *  Notes: code can be overlaid on (uchar *)freq+256
  */
 
-int sh_PackTree( uchar *len, uchar *symb, uchar *aux, uint *buf, int n );
+int sh_PackTree(uchar *len, uchar *symb, uchar *aux, uint *buf, int n);
 
 /*  Function: sh_PackTree()
  *  Purpose: pack code tree
@@ -92,7 +92,7 @@ int sh_PackTree( uchar *len, uchar *symb, uchar *aux, uint *buf, int n );
  *  Notes: aux can be overlaid on (uchar *)freq+512
  */
 
-int sh_ExpandTree( uchar *len, uchar *symb, uint *buf );
+int sh_ExpandTree(uchar *len, uchar *symb, uint *buf);
 
 /*  Function: sh_ExpandTree()
  *  Purpose: expand code tree
@@ -102,7 +102,7 @@ int sh_ExpandTree( uchar *len, uchar *symb, uint *buf );
  *  Notes: none
  */
 
-void sh_CalcDecode( uchar *len, uchar *symb, uchar *base, uchar *offs, uchar *cache, int n );
+void sh_CalcDecode(uchar *len, uchar *symb, uchar *base, uchar *offs, uchar *cache, int n);
 
 /*  Function: sh_CalcDecode()
  *  Purpose: calculate decode tables
@@ -123,25 +123,21 @@ void sh_CalcDecode( uchar *len, uchar *symb, uchar *base, uchar *offs, uchar *ca
 
 template < class T1, class T2, class T3 >
 inline void
-EncodeSymbol( T1 *len, T1 *code, T1 symbol, T2 buf, T3 & bufpos, T3 & bits, T3 & bitbuf )
-{
-	uint symblen, symbcode;
-	symblen = len[symbol];
-	symbcode = code[symbol];
-	if (symblen <= bits)
-	{
-		bitbuf <<= symblen;
-		bitbuf |= symbcode;
-		bits -= symblen;
-	}
-	else
-	{
-		bitbuf <<= bits;
-		bitbuf |= ( symbcode >> ( symblen - bits ) );
-		buf[bufpos ++] = bitbuf;
-		bitbuf = symbcode;
-		bits += ( 32 - symblen );
-	}
+EncodeSymbol(T1 *len, T1 *code, T1 symbol, T2 buf, T3 & bufpos, T3 & bits, T3 & bitbuf) {
+  uint symblen, symbcode;
+  symblen = len[symbol];
+  symbcode = code[symbol];
+  if (symblen <= bits) {
+    bitbuf <<= symblen;
+    bitbuf |= symbcode;
+    bits -= symblen;
+  } else {
+    bitbuf <<= bits;
+    bitbuf |= (symbcode >> (symblen - bits));
+    buf[bufpos++] = bitbuf;
+    bitbuf = symbcode;
+    bits += (32 - symblen);
+  }
 }
 
 /*  Purpose: decode a symbol
@@ -151,31 +147,29 @@ EncodeSymbol( T1 *len, T1 *code, T1 symbol, T2 buf, T3 & bufpos, T3 & bits, T3 &
  */
 template < class T1, class T3>
 inline void
-DecodeSymbol( T1 base, T1 offs, T1 cache, T1 symb, T3 * buf, T3 & bufpos, T3 & bits, T3 & bitbuf, T3 & symbol )
-{
-	uint frame, codelen;
-	if (bits)
-		frame = ( bitbuf << ( 32 - bits ) ) | ( buf[bufpos] >> bits );
-	else
-		frame = buf[bufpos];
-	codelen = cache[frame >> ( 32 - SH_CACHEBITS )];
-	if (codelen > SH_CACHEBITS) 
-		while (( frame >> ( 32 - codelen ) ) < base[codelen])
-			++codelen;
-	symbol = symb[( frame >> ( 32 - codelen ) ) - base[codelen] + offs[codelen]];
-	if (codelen <= bits)
-		bits -= codelen;
-	else
-	{
-		bits += 32 - codelen;
-		bitbuf = buf[bufpos++];
-	}
+DecodeSymbol(T1 base, T1 offs, T1 cache, T1 symb, T3 * buf, T3 & bufpos, T3 & bits, T3 & bitbuf, T3 & symbol) {
+  uint frame, codelen;
+  if (bits)
+    frame = (bitbuf << (32 - bits)) | (buf[bufpos] >> bits);
+  else
+    frame = buf[bufpos];
+  codelen = cache[frame >> (32 - SH_CACHEBITS)];
+  if (codelen > SH_CACHEBITS)
+    while ((frame >> (32 - codelen)) < base[codelen])
+      ++codelen;
+  symbol = symb[(frame >> (32 - codelen)) - base[codelen] + offs[codelen]];
+  if (codelen <= bits)
+    bits -= codelen;
+  else {
+    bits += 32 - codelen;
+    bitbuf = buf[bufpos++];
+  }
 }
 
-template < class T1 , class T2 >
-bool cmp( T1 &a, T2 &b, T1 &c, T2 &d )
-{
-	return a<b ? 0 : (a>b ? 1 : (c<d ? 1 : 0));
+template < class T1, class T2 >
+bool
+cmp(T1 &a, T2 &b, T1 &c, T2 &d) {
+  return a < b ? 0 : (a > b ? 1 : (c < d ? 1 : 0));
 }
 
 #endif /* SHC_H */

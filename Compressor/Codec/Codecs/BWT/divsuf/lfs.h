@@ -25,12 +25,12 @@
  */
 
 #ifndef _LFS_H
-#    define _LFS_H 1
-#    define LFS_OFF_T off_t
-#    define LFS_FOPEN fopen
-#    define LFS_FTELL ftello
-#    define LFS_FSEEK fseeko
-#    define LFS_PRId  PRIdMAX
-#    define PRIdOFF_T LFS_PRId
+#define _LFS_H 1
+#define LFS_OFF_T off_t
+#define LFS_FOPEN fopen
+#define LFS_FTELL ftello
+#define LFS_FSEEK fseeko
+#define LFS_PRId  PRIdMAX
+#define PRIdOFF_T LFS_PRId
 
 #endif /* _LFS_H */

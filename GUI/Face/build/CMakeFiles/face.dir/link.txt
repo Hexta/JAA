@@ -1,2 +1,0 @@
-/usr/bin/ar cr libface.a  CMakeFiles/face.dir/face.cpp.o
-/usr/bin/ranlib libface.a

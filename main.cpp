@@ -10,17 +10,16 @@
 #include "GUI/Face/face.h"
 
 int
-main( int argc, char *argv[] )
-{
-	QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
-	QTextCodec::setCodecForTr( codec );
+main(int argc, char *argv[]) {
+  QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+  QTextCodec::setCodecForTr(codec);
 
-	QApplication app( argc, argv );
+  QApplication app(argc, argv);
 
-	Face * mainw = new Face( );
+  Face * mainw = new Face();
 
-	mainw->setWindowTitle( QObject::tr( "Just another archiver" ) );
-	mainw->show( );
+  mainw->setWindowTitle(QObject::tr("Just another archiver"));
+  mainw->show();
 
-	return app.exec( );
+  return app.exec();
 }

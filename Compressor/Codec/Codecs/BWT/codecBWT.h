@@ -6,23 +6,23 @@
  */
 
 #ifndef CODEC_BWT_H
-#    define	CODEC_BWT_H
+#define	CODEC_BWT_H
 
 
-#    include "divsuf/divsufsort.h"
-#    include "../../../DataBlock/dataBlock.h"
-#    include "../../codecAbstract.h"
+#include "divsuf/divsufsort.h"
+#include "../../../DataBlock/dataBlock.h"
+#include "../../codecAbstract.h"
 
-class Codec_BWT : public virtual Codec_abstract
-{
+class Codec_BWT : public virtual Codec_abstract {
 public:
-    Codec_BWT( );
-    ~ Codec_BWT( );
+  Codec_BWT();
+  ~Codec_BWT();
 
-    void		encode_BWT( DataBlock* inData );
-    void	    decode_BWT( DataBlock* inData );
+  void encode_BWT(DataBlock* inData);
+  void decode_BWT(DataBlock* inData);
+  
 private:
-} ;
+};
 
 
 #endif	/* CODEC_BWT_H */

@@ -6,10 +6,10 @@
  */
 
 #ifndef _FACE_H
-#    define	_FACE_H
+#define	_FACE_H
 
-#    include <QFileDialog>
-#    include <GUI/CompressorThread/compressorThread.h>
+#include <QFileDialog>
+#include <GUI/CompressorThread/compressorThread.h>
 
 #include <QMainWindow>
 
@@ -21,93 +21,91 @@ class StatInfoW;
 
 namespace Ui {
 
-    class face;
+class face;
 }
 
-class Face : public QMainWindow
-{
-    Q_OBJECT
+class Face : public QMainWindow {
+  Q_OBJECT
 public:
 
-    Face( );
-    virtual ~ Face( );
+  Face();
+  virtual ~Face();
 
 public slots:
-    void						about( );
-    void						selectFilesToCompress( );
-    void						selectFileToDecompress( );
-    void						compress( );
-    void						decompress( );
-    void						listArchiveContents( );
-    void						displayCompressStatus( int progress, QString fileName, float speed );
-    void						displayDecompressStatus( int progress, QString fileName, float speed );
-    void						displayListStatus( int progress, QString fileName, float speed );
-    void						showInfo( CTCompressorStatus::ErrorCode error, QString fileName);
-    void						showCompressStatInfo( Compressor::Stat stat );
-    void						showDecompressStatInfo( Compressor::Stat stat );
-    void						setCompressSettings( unsigned int blockSize, QList< Compressor::CoderTypes> compressSequence );
-    void						setDecompressSettings( bool keepBrokenFiles );
+  void about();
+  void selectFilesToCompress();
+  void selectFileToDecompress();
+  void compress();
+  void decompress();
+  void listArchiveContents();
+  void displayCompressStatus(int progress, QString fileName, float speed);
+  void displayDecompressStatus(int progress, QString fileName, float speed);
+  void displayListStatus(int progress, QString fileName, float speed);
+  void showInfo(CTCompressorStatus::ErrorCode error, QString fileName);
+  void showCompressStatInfo(Compressor::Stat stat);
+  void showDecompressStatInfo(Compressor::Stat stat);
+  void setCompressSettings(unsigned int blockSize, QList< Compressor::CoderTypes> compressSequence);
+  void setDecompressSettings(bool keepBrokenFiles);
+
 private:
+  CompressSettingsPanel *compressSettingsPanel;
+  DecompressSettingsPanel *decompressSettingsPanel;
 
-    CompressSettingsPanel		*compressSettingsPanel;
-    DecompressSettingsPanel		*decompressSettingsPanel;
+  StatInfoW *statInfoW;
 
-    StatInfoW					*statInfoW;
+  CompressorThread *compressThread;
+  CompressorThread *decompressThread;
+  CompressorThread *listArchiveThread;
+  Ui::face *widget;
+  Compressor *compressor;
 
-    CompressorThread			*compressThread;
-    CompressorThread			*decompressThread;
-    CompressorThread			*listArchiveThread;
-    Ui::face					*widget;
-    Compressor					*compressor;
+  QToolBar *actionToolBar;
 
-    QToolBar					*actionToolBar;
+  FileList *filelist;
 
-    FileList					*filelist;
+  QStringList sourceFileNames;
+  QStringList encodedfileNames;
 
-    QStringList					sourceFileNames;
-    QStringList					encodedfileNames;
+  QString destFileName;
+  QString destDirName;
 
-    QString						destFileName;
-    QString						destDirName;
+  QDir compressBaseDir;
+  QDir decompressBaseDir;
 
-    QDir						compressBaseDir;
-    QDir						decompressBaseDir;
+  QDockWidget *compressSettingsDock;
+  QDockWidget *decompressSettingsDock;
 
-    QDockWidget					*compressSettingsDock;
-    QDockWidget					*decompressSettingsDock;
+  QAction *selectFilesToCompressAction;
+  QAction *selectFileToDecompressAction;
+  QAction *compressAction;
+  QAction *decompressAction;
+  QAction *exitAction;
+  QAction *aboutAction;
+  QAction *aboutQtAction;
 
-    QAction						*selectFilesToCompressAction;
-    QAction						*selectFileToDecompressAction;
-    QAction						*compressAction;
-    QAction						*decompressAction;
-    QAction						*exitAction;
-    QAction						*aboutAction;
-    QAction						*aboutQtAction;
+  QMenu *fileMenu;
+  QMenu *helpMenu;
 
-    QMenu						*fileMenu;
-    QMenu						*helpMenu;
+  QProgressDialog *compressingProgressDialog;
+  QProgressDialog *decompressingProgressDialog;
+  QProgressDialog *listArchiveContentsProgressDialog;
 
-    QProgressDialog				*compressingProgressDialog;
-    QProgressDialog				*decompressingProgressDialog;
-    QProgressDialog				*listArchiveContentsProgressDialog;
+  bool brokenFileWarningShown;
 
-    bool						brokenFileWarningShown;
+  QList< Compressor::CoderTypes> compressSequence;
+  unsigned int blockSize;
+  bool keepBrokenFiles;
 
-    QList< Compressor::CoderTypes> compressSequence;
-    unsigned int				blockSize;
-    bool						keepBrokenFiles;
-
-    void						createActions( );
-    void						createToolBars( );
-    void						createMenus( );
-    void						setupWidgetsConnections( );
-    void						activateCompressMode( );
-    void						activateDecompressMode( );
+  void createActions();
+  void createToolBars();
+  void createMenus();
+  void setupWidgetsConnections();
+  void activateCompressMode();
+  void activateDecompressMode();
 
 private slots:
-    void						initSettings( );
-
-} ;
+  void initSettings();
+};
 
 
 #endif	/* _FACE_H */

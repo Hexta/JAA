@@ -6,22 +6,21 @@
  */
 
 #ifndef CODEC_RLE_H
-#    define	CODEC_RLE_H
+#define	CODEC_RLE_H
 
-#    include "../../../DataBlock/dataBlock.h"
-#    include "../../codecAbstract.h"
+#include "../../../DataBlock/dataBlock.h"
+#include "../../codecAbstract.h"
 
-class Codec_RLE : public virtual Codec_abstract
-{
+class Codec_RLE : public virtual Codec_abstract {
 public:
-    Codec_RLE( );
-    virtual ~ Codec_RLE( );
+  Codec_RLE();
+  virtual ~Codec_RLE();
 
-    void		decode_RLE( DataBlock* inData );
-    void		encode_RLE( DataBlock* inData );
+  void decode_RLE(DataBlock* inData);
+  void encode_RLE(DataBlock* inData);
+
 private:
-
-} ;
+};
 
 #endif	/* CODEC_RLE_H */
 

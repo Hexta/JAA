@@ -16,7 +16,7 @@ void
 Codec_HUFF::decode_HUFF(DataBlock* inData) {
   initDecoder(inData);
 
-  dataT buffer(decodedDataSize);
+  buffer.reserve(decodedDataSize);
 
   sh_DecodeBlock(data, buffer.data(), encodedDataSize);
 
@@ -26,7 +26,8 @@ Codec_HUFF::decode_HUFF(DataBlock* inData) {
 void
 Codec_HUFF::encode_HUFF(DataBlock* inData) {
   initEncoder(inData);
-  dataT buffer(decodedDataSize + 256);
+
+  buffer.reserve(decodedDataSize + 256);
 
   encodedDataSize = sh_EncodeBlock(data, buffer.data(), decodedDataSize);
 

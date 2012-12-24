@@ -15,8 +15,8 @@ void
 Codec_RLE::decode_RLE(DataBlock* inData) {
   initDecoder(inData);
 
-  dataT buffer;
   buffer.reserve(decodedDataSize);
+  buffer.clear();
 
   int currChar, prevChar;
   prevChar = 0xFFFFFF;
@@ -57,8 +57,8 @@ Codec_RLE::encode_RLE(DataBlock* inData) {
 
   encodedDataSize = decodedDataSize * 2; //<---
 
-  dataT buffer;
   buffer.reserve(encodedDataSize);
+  buffer.clear();
 
   int currChar = EOF, prevChar = EOF; /* current and previous characters */
   unsigned char count;

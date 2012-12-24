@@ -9,6 +9,8 @@
 #define	CODEC_ABSTRACT_H
 #include <stdint.h>
 
+#include "../DataBlock/dataBlock.h"
+
 using namespace std;
 
 class DataBlockHeader;
@@ -20,6 +22,7 @@ public:
   virtual ~Codec_abstract() = 0;
 
 protected:
+  dataT buffer;
   unsigned char *data;
   unsigned int decodedDataSize;
   unsigned int encodedDataSize;

@@ -15,17 +15,15 @@ void
 Codec_BWT::encode_BWT(DataBlock* inData) {
   initEncoder(inData);
 
-  unsigned int * index_table = new unsigned int[decodedDataSize];
-
   encodedDataSize = decodedDataSize;
 
-  dataT buffer(encodedDataSize);
+  buffer.reserve(encodedDataSize);
 
   SA.reserve(decodedDataSize);
 
   codecParams = divbwt(data, buffer.data(), SA.data(), decodedDataSize);
 
-  inData->setData(buffer.data(), buffer.size());
+  inData->setData(buffer.data(), encodedDataSize);
 
   recordOutHeader(inData->getHeader(), BWT_ID);
 }
@@ -33,8 +31,6 @@ Codec_BWT::encode_BWT(DataBlock* inData) {
 void
 Codec_BWT::decode_BWT(DataBlock* inData) {
   initDecoder(inData);
-
-  unsigned int * index_table = new unsigned int [encodedDataSize];
 
   SA.reserve(encodedDataSize);
   inverse_bw_transform(data, data, SA.data(), encodedDataSize, codecParams);

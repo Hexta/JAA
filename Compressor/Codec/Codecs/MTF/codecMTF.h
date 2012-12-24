@@ -30,7 +30,8 @@ private:
     struct mtf_list *next;
   } mtf_list_t;
 
-  mtf_list_t *p, *head, *tail, *table;
+  vector <mtf_list_t> table;
+  mtf_list_t *p, *head, *tail;
 
   void init_mtf(int tsize);
 

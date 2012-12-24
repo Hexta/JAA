@@ -20,8 +20,9 @@ public:
 
   void encode_BWT(DataBlock* inData);
   void decode_BWT(DataBlock* inData);
-  
+
 private:
+  vector <int32_t> SA;
 };
 
 

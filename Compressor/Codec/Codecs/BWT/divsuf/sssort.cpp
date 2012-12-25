@@ -269,6 +269,7 @@ ss_pivot(const uint8_t *Td, const int32_t *PA, int32_t *first, int32_t *last) {
       return ss_median5(Td, PA, first, first + t, middle, last - 1 - t, last - 1);
     }
   }
+  
   t >>= 3;
   first = ss_median3(Td, PA, first, first + t, first + (t << 1));
   middle = ss_median3(Td, PA, middle - t, middle, middle + t);
@@ -316,11 +317,10 @@ ss_mintrosort(const uint8_t *T, const int32_t *PA,
   const uint8_t *Td;
   int32_t *a, *b, *c, *d, *e, *f;
   int32_t s, t;
-  int32_t ssize;
-  int32_t limit;
+  int32_t limit = ss_ilg(last - first);
   int32_t v, x = 0;
 
-  for (ssize = 0, limit = ss_ilg(last - first);;) {
+  for (;;) {
 
     if ((last - first) <= SS_INSERTIONSORT_THRESHOLD) {
       if (1 < (last - first)) {
@@ -340,7 +340,7 @@ ss_mintrosort(const uint8_t *T, const int32_t *PA,
     if (limit < 0) {
       for (a = first + 1, v = Td[PA[*first]]; a < last; ++a) {
         if ((x = Td[PA[*a]]) != v) {
-          if (1 < (a - first)) {
+          if (a > first) {
             break;
           }
           v = x;
@@ -358,7 +358,7 @@ ss_mintrosort(const uint8_t *T, const int32_t *PA,
           first = a, limit = -1;
         }
       } else {
-        if (1 < (last - a)) {
+        if (last > a) {
           stack.push(StackDataT(first, a, depth + 1, ss_ilg(a - first)));
           first = a, limit = -1;
         } else {
@@ -376,8 +376,9 @@ ss_mintrosort(const uint8_t *T, const int32_t *PA,
     /* partition */
     for (b = first; (++b < last) && ((x = Td[PA[*b]]) == v);) {
     }
+    
     if (((a = b) < last) && (x < v)) {
-      for (; (++b < last) && ((x = Td[PA[*b]]) <= v);) {
+      while ((++b < last) && ((x = Td[PA[*b]]) <= v)) {
         if (x == v) {
           swap(*b, *a);
           ++a;
@@ -394,15 +395,15 @@ ss_mintrosort(const uint8_t *T, const int32_t *PA,
         }
       }
     }
-    for (; b < c;) {
+    while (b < c) {
       swap(*b, *c);
-      for (; (++b < c) && ((x = Td[PA[*b]]) <= v);) {
+      while ((++b < c) && ((x = Td[PA[*b]]) <= v)) {
         if (x == v) {
           swap(*b, *a);
           ++a;
         }
       }
-      for (; (b < --c) && ((x = Td[PA[*c]]) >= v);) {
+      while ((b < --c) && ((x = Td[PA[*c]]) >= v)) {
         if (x == v) {
           swap(*c, *d);
           --d;
@@ -486,7 +487,8 @@ ss_rotate(int32_t *first, int32_t *middle, int32_t *last) {
   int32_t *a, *b, t;
   int32_t l, r;
   l = middle - first, r = last - middle;
-  for (; (0 < l) && (0 < r);) {
+
+  while ((l > 0) && (r > 0)) {
     if (l == r) {
       ss_blockswap(first, middle, l);
       break;
@@ -825,7 +827,7 @@ ss_swapmerge(const uint8_t *T, const int32_t *PA,
         if (*rm < 0) {
           *rm = ~*rm;
           if (first < lm) {
-            for (; *--l < 0;) {
+            while (*--l < 0) {
             }
             next |= 4;
           }

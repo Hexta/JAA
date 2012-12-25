@@ -9,7 +9,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include "statInfoW.h"
-#include "../DataUnitsToQString/dataUnitsToQString.h"
+#include "dataUnitsToQString.h"
 
 StatInfoW::StatInfoW(QWidget * parent) : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint) {
   encodingSequenceColumnLabel = new QLabel(tr("Encoding Sequence"));

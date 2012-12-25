@@ -13,12 +13,12 @@
 #include "face.h"
 #include <Compressor/compressor.h>
 #include <ui_face.h>
-#include "../FileList/fileList.h"
-#include "../CompressorThread/compressorThread.h"
-#include "../SettingsPanels/compressSettingsPanel.h"
-#include "../SettingsPanels/decompressSetingsPanel.h"
-#include "../StatInfoW/statInfoW.h"
-#include "../DataUnitsToQString/dataUnitsToQString.h"
+#include "fileList.h"
+#include "compressorThread.h"
+#include "compressSettingsPanel.h"
+#include "decompressSetingsPanel.h"
+#include "statInfoW.h"
+#include "dataUnitsToQString.h"
 
 Face::Face() : sourceFileNames() {
   widget = new Ui::face;

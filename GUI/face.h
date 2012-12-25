@@ -9,7 +9,7 @@
 #define	_FACE_H
 
 #include <QFileDialog>
-#include <GUI/CompressorThread/compressorThread.h>
+#include "compressorThread.h"
 
 #include <QMainWindow>
 

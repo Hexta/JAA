@@ -7,7 +7,7 @@
 
 #include <QApplication>
 #include <QTextCodec>
-#include "GUI/Face/face.h"
+#include "GUI/face.h"
 
 int
 main(int argc, char *argv[]) {

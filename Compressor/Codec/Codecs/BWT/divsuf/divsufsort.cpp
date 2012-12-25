@@ -294,7 +294,6 @@ construct_BWT(const uint8_t *T, int32_t *SA,
 
 int32_t
 divsufsort(const uint8_t *T, int32_t *SA, int32_t n) {
-  int32_t *bucket_A, *bucket_B;
   int32_t m;
   int32_t err = 0;
 
@@ -312,19 +311,12 @@ divsufsort(const uint8_t *T, int32_t *SA, int32_t n) {
     return 0;
   }
 
-  bucket_A = new int32_t [BUCKET_A_SIZE];
-  bucket_B = new int32_t [BUCKET_B_SIZE];
+  int32_t bucket_A [BUCKET_A_SIZE];
+  int32_t bucket_B [BUCKET_B_SIZE];
 
   /* Suffixsort. */
-  if ((bucket_A != NULL) && (bucket_B != NULL)) {
-    m = sort_typeBstar(T, SA, bucket_A, bucket_B, n);
-    construct_SA(T, SA, bucket_A, bucket_B, n, m);
-  } else {
-    err = -2;
-  }
-
-  delete[] bucket_B;
-  delete[] bucket_A;
+  m = sort_typeBstar(T, SA, bucket_A, bucket_B, n);
+  construct_SA(T, SA, bucket_A, bucket_B, n, m);
 
   return err;
 }
@@ -332,7 +324,6 @@ divsufsort(const uint8_t *T, int32_t *SA, int32_t n) {
 int32_t
 divbwt(const uint8_t *T, uint8_t *U, int32_t *A, int32_t n) {
   int32_t *B;
-  int32_t *bucket_A, *bucket_B;
   int32_t m, pidx, i;
 
   /* Check arguments. */
@@ -348,29 +339,24 @@ divbwt(const uint8_t *T, uint8_t *U, int32_t *A, int32_t n) {
   if ((B = A) == NULL) {
     B = new int32_t [ (n + 1)];
   }
-  bucket_A = new int32_t [BUCKET_A_SIZE];
-  bucket_B = new int32_t [BUCKET_B_SIZE];
+
+  int32_t bucket_A [BUCKET_A_SIZE];
+  int32_t bucket_B [BUCKET_B_SIZE];
 
   /* Burrows-Wheeler Transform. */
-  if ((B != NULL) && (bucket_A != NULL) && (bucket_B != NULL)) {
-    m = sort_typeBstar(T, B, bucket_A, bucket_B, n);
-    pidx = construct_BWT(T, B, bucket_A, bucket_B, n, m);
+  m = sort_typeBstar(T, B, bucket_A, bucket_B, n);
+  pidx = construct_BWT(T, B, bucket_A, bucket_B, n, m);
 
-    /* Copy to output string. */
-    U[0] = T[n - 1];
-    for (i = 0; i < pidx; ++i) {
-      U[i + 1] = (uint8_t) B[i];
-    }
-    for (i += 1; i < n; ++i) {
-      U[i] = (uint8_t) B[i];
-    }
-    pidx += 1;
-  } else {
-    pidx = -2;
+  /* Copy to output string. */
+  U[0] = T[n - 1];
+  for (i = 0; i < pidx; ++i) {
+    U[i + 1] = (uint8_t) B[i];
   }
+  for (i += 1; i < n; ++i) {
+    U[i] = (uint8_t) B[i];
+  }
+  pidx += 1;
 
-  delete[] bucket_B;
-  delete[] bucket_A;
   if (A == NULL)
     delete[] B;
 

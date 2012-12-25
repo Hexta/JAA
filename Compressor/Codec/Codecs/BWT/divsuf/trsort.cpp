@@ -254,7 +254,7 @@ tr_partition(const int32_t *ISAd,
   for (b = middle - 1; (++b < last) && ((x = ISAd[*b]) == v);) {
   }
   if (((a = b) < last) && (x < v)) {
-    for (; (++b < last) && ((x = ISAd[*b]) <= v);) {
+    while ((++b < last) && ((x = ISAd[*b]) <= v)) {
       if (x == v) {
         swap(*b, *a);
         ++a;
@@ -271,15 +271,17 @@ tr_partition(const int32_t *ISAd,
       }
     }
   }
-  for (; b < c;) {
+
+  while (b < c) {
     swap(*b, *c);
-    for (; (++b < c) && ((x = ISAd[*b]) <= v);) {
+    while ((++b < c) && ((x = ISAd[*b]) <= v)) {
       if (x == v) {
         swap(*b, *a);
         ++a;
       }
     }
-    for (; (b < --c) && ((x = ISAd[*c]) >= v);) {
+    
+    while ((b < --c) && ((x = ISAd[*c]) >= v)) {
       if (x == v) {
         swap(*c, *d);
         --d;

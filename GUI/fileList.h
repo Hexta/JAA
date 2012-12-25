@@ -12,7 +12,7 @@
 #include <QDir>
 
 #include "Compressor/FilesTable/filesTable.h"
-#include "../CompressorThread/compressorThread.h"
+#include "compressorThread.h"
 
 class FileList : public QTableWidget {
   Q_OBJECT

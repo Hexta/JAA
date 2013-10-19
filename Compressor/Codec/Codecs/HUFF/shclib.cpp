@@ -147,7 +147,7 @@ sh_GetFreq(int *freq, uchar *block, int size) {
 int
 sh_SortFreq(int *freq, uchar *symb) {
   int ls[8], hs[8];
-  int l, h, m, p, i, j, s, n;
+  int m, p, i, j, s, n;
 
   /* Mark & count actual symbols */
   for (i = n = 0; i < SH_MAX_ALPHA; ++i)
@@ -158,6 +158,7 @@ sh_SortFreq(int *freq, uchar *symb) {
   hs[0] = n - 1;
 
   for (s = 0; s >= 0; --s) {
+    int l, h;
 
     /* Pop next one */
     l = ls[s];
@@ -357,12 +358,13 @@ sh_CalcLen(int *freq, uchar *symb, uchar *len, int n, int maxLen) {
 void
 sh_SortLen(uchar *len, uchar *symb, int n) {
   int ls[8], hs[8];
-  int l, h, m, lm, sm, i, j, s;
+  int m, lm, sm, i, j, s;
 
   ls[0] = 0;
   hs[0] = n - 1;
 
   for (s = 0; s >= 0; --s) {
+    int l, h;
 
     /* Pop next one */
     l = ls[s];
@@ -423,7 +425,7 @@ sh_CalcCode(uchar *len, uchar *symb, uchar *code, int n) {
 int
 sh_PackTree(uchar *len, uchar *symb, uchar *aux, uint *buf, int n) {
   int runlen, maxrun, maxlen, runbits, lenbits, flag, i, j, t;
-  int treesize, bufpos, curval, curbits, bits;
+  int treesize, bufpos, bits;
   uint bitbuf;
 
   /* log(maxlen) base 2 */
@@ -458,6 +460,7 @@ sh_PackTree(uchar *len, uchar *symb, uchar *aux, uint *buf, int n) {
 
   /* Pack tree itself */
   for (treesize = bufpos = i = j = 0; i < SH_MAX_ALPHA; ++i) {
+    int curval, curbits;
 
     curval = len[i];
     curbits = lenbits;

@@ -247,7 +247,7 @@ void
 tr_partition(const int32_t *ISAd,
     int32_t *first, int32_t *middle, int32_t *last,
     int32_t **pa, int32_t **pb, int32_t v) {
-  int32_t *a, *b, *c, *d, *e, *f;
+  int32_t *a, *b, *c, *d;
   int32_t t, s;
   int32_t x = 0;
 
@@ -290,6 +290,7 @@ tr_partition(const int32_t *ISAd,
   }
 
   if (a <= d) {
+    int32_t *e, *f;
     c = b - 1;
     if ((s = a - first) > (t = b - a)) {
       s = t;

@@ -58,8 +58,6 @@ Compressor::compress(
 
   vector<int> proceedFiles;
 
-  const int iFilesCount = iFileNames.size();
-
   for (vector<QString>::const_iterator i = iFileNames.begin();
        i != iFileNames.end(); ++i) {
 

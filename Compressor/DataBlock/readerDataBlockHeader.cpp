@@ -18,13 +18,12 @@ ReaderDataBlockHeader::~ReaderDataBlockHeader() { }
 
 int
 ReaderDataBlockHeader::read(DataBlockHeader * outHeader, QFile &in, bool recoverMode) {
-  unsigned char in_header_data[HEADER_SIZE];
-
   if (recoverMode) {
     if (find(outHeader, in)) {
       return FILE_END;
     }
   } else {
+    unsigned char in_header_data[HEADER_SIZE];
     unsigned int receivedBytesCount = in.read((char*) in_header_data, HEADER_SIZE);
 
     if (receivedBytesCount == 0)

@@ -35,7 +35,7 @@ int32_t
 sort_typeBstar(const uint8_t *T, int32_t *SA,
     int32_t *bucket_A, int32_t *bucket_B,
     int32_t n) {
-  int32_t *PAb, *ISAb, *buf;
+  int32_t *PAb;
 
   int32_t i, j, k, t, m, bufsize;
   int32_t c0, c1;
@@ -81,6 +81,7 @@ sort_typeBstar(const uint8_t *T, int32_t *SA,
   }
 
   if (0 < m) {
+       int32_t *ISAb, *buf;
     /* Sort the type B* suffixes by their first two characters. */
     PAb = SA + n - m;
     ISAb = SA + m;

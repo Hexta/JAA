@@ -873,7 +873,7 @@ sssort(const uint8_t *T, const int32_t *PA,
     int32_t *buf, int32_t bufsize,
     int32_t depth, int32_t n, int32_t lastsuffix) {
   int32_t *a;
-  int32_t *b, *middle, *curbuf;
+  int32_t *b, *middle;
   int32_t j, k, curbufsize, limit;
   int32_t i;
 
@@ -891,6 +891,7 @@ sssort(const uint8_t *T, const int32_t *PA,
     middle = last, limit = 0;
   }
   for (a = first, i = 0; SS_BLOCKSIZE < (middle - a); a += SS_BLOCKSIZE, ++i) {
+    int32_t *curbuf;
 
     ss_mintrosort(T, PA, a, a + SS_BLOCKSIZE, depth);
     curbufsize = last - (a + SS_BLOCKSIZE);

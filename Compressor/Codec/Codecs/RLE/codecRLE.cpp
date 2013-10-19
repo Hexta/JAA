@@ -18,14 +18,13 @@ Codec_RLE::decode_RLE(DataBlock* inData) {
   buffer.reserve(decodedDataSize);
   buffer.clear();
 
-  int currChar, prevChar;
-  prevChar = 0xFFFFFF;
+  int prevChar = 0xFFFFFF;
 
   unsigned char count;
 
   unsigned int i = 0;
   while (i < encodedDataSize) {
-    currChar = data[i++];
+    int currChar = data[i++];
 
     buffer.push_back(currChar);
 

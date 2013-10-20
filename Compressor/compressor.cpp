@@ -58,14 +58,13 @@ Compressor::compress(
 
   vector<int> proceedFiles;
 
-  for (vector<QString>::const_iterator i = iFileNames.begin();
-       i != iFileNames.end(); ++i) {
+  int fileId = 0;
 
-    const int fileId = i - iFileNames.begin();
-    QFile fin(*i);
+  for (const auto &iFileName: iFileNames) {
+    QFile fin(iFileName);
 
     if (!fin.open(QIODevice::ReadOnly)) {
-      showInfo(CompressorStatus::INPUT_FILE_OPEN_ERROR, *i, fileId + 1);
+      showInfo(CompressorStatus::INPUT_FILE_OPEN_ERROR, iFileName, fileId + 1);
       error = CompressorStatus::INPUT_FILE_OPEN_ERROR;
       continue;
     }
@@ -73,6 +72,8 @@ Compressor::compress(
 
     proceedFiles.push_back(fileId);
     decodedDataSize += fin.size();
+
+    ++fileId;
   }
 
   block = new DataBlock(blocksize);
@@ -280,10 +281,9 @@ Compressor::decompress(const QString &iFileName,
   vector<string> * brokenFilesNames = blocksTable.getNonCompleteFilesNames();
 
   if (brokenFilesNames)
-    for (vector<string>::iterator i = brokenFilesNames->begin();
-         i != brokenFilesNames->end(); ++i) {
-      showInfo(CompressorStatus::INPUT_FILE_CORRUPTED, i->c_str(),
-          blocksTable.getId(*i));
+    for (auto &brokenFileName: *brokenFilesNames) {
+      showInfo(CompressorStatus::INPUT_FILE_CORRUPTED, brokenFileName.c_str(),
+          blocksTable.getId(brokenFileName));
       if (keepBroken == false) removeBrokenFiles();
     }
 

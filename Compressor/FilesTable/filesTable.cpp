@@ -8,118 +8,107 @@
 #include "filesTable.h"
 #include "../DataBlock/dataBlockHeader.h"
 
-FilesTable::FilesTable( ) : fileBlocksTable( ), brokenFiletable( ), brokenFilesNames( ), archiveContent( ) { }
+FilesTable::FilesTable() : fileBlocksTable(), brokenFiletable(), brokenFilesNames(), archiveContent() { }
 
-FilesTable::~FilesTable( ) { }
+FilesTable::~FilesTable() { }
 
 int
-FilesTable::add( DataBlockHeader * inHeader, unsigned int id )
-{
-	int result = 0;
-	
-	map< string, FileBlocksInfo >::iterator pos = fileBlocksTable.find( string( inHeader->getFileName( ) ) );
+FilesTable::add(DataBlockHeader * inHeader, unsigned int id) {
+    int result = 0;
 
-	if ( pos == fileBlocksTable.end( ) )
-	{
-		FileBlocksInfo blockInfo( inHeader->getPartsCount( ), id );
+    auto pos = fileBlocksTable.find(string(inHeader->getFileName()));
 
-		result = FIRST_RECIEVED_BLOCK;
+    if (pos == fileBlocksTable.end()) {
+        FileBlocksInfo blockInfo(inHeader->getPartsCount(), id);
 
-		switch ( blockInfo.setRecievedBlock( inHeader->getPart( ) ) )
-		{
-			case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
-				break;
-			case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
-				break;
-			case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
-				break;
-			default:break;
-		}
+        result = FIRST_RECIEVED_BLOCK;
 
-		fileBlocksTable.insert( map< string, FileBlocksInfo >::value_type( inHeader->getFileName( ), blockInfo ) );
-	}
-	else
-	{
-		switch ( pos->second.setRecievedBlock( inHeader->getPart( ) ) )
-		{
-			case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
-				break;
-			case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
-				break;
-			case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
-				break;
-			default:break;
-		}
-	}
+        switch (blockInfo.setRecievedBlock(inHeader->getPart())) {
+            case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
+                break;
+            case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
+                break;
+            case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
+                break;
+            default:break;
+        }
 
-	return result;
+        fileBlocksTable.insert(map< string, FileBlocksInfo >::value_type(inHeader->getFileName(), blockInfo));
+    } else {
+        switch (pos->second.setRecievedBlock(inHeader->getPart())) {
+            case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
+                break;
+            case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
+                break;
+            case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
+                break;
+            default:break;
+        }
+    }
+
+    return result;
 }
 
 void
-FilesTable::clean( )
-{
-	fileBlocksTable.clear( );
+FilesTable::clean() {
+    fileBlocksTable.clear();
 }
 
 unsigned int
-FilesTable::getId( DataBlockHeader * inHeader ) const
-{
-	auto i = fileBlocksTable.find( string( inHeader->getFileName( ) ) );
-	if ( i == fileBlocksTable.end( ) )
-		return 0;
-	return i->second.getId( );
+FilesTable::getId(DataBlockHeader * inHeader) const {
+    auto i = fileBlocksTable.find(string(inHeader->getFileName()));
+    if (i == fileBlocksTable.end())
+        return 0;
+    return i->second.getId();
 }
 
 unsigned int
-FilesTable::getId( string fileName ) const
-{
-	auto i = fileBlocksTable.find( fileName );
-	if ( i == fileBlocksTable.end( ) )
-		return 0;
-	return i->second.getId( );
+FilesTable::getId(string fileName) const {
+    auto i = fileBlocksTable.find(fileName);
+    if (i == fileBlocksTable.end())
+        return 0;
+    return i->second.getId();
 }
 
 void
-FilesTable::remove( DataBlockHeader * inHeader )
-{
-	fileBlocksTable.erase( string( inHeader->getFileName( ) ) );
+FilesTable::remove(DataBlockHeader * inHeader) {
+    fileBlocksTable.erase(string(inHeader->getFileName()));
 }
 
 map< string, vector <uint32_t> > &
-FilesTable::getNonCompleteFilesBlocksInfo( )
-{
-	brokenFiletable.clear( );
-	for ( auto &i: fileBlocksTable )
-		if ( i.second.getNonRecievedBlocksInfo( ) )
-			brokenFiletable.insert( make_pair( i.first, *( i.second.getNonRecievedBlocksInfo( ) ) ) );
-	return brokenFiletable;
+FilesTable::getNonCompleteFilesBlocksInfo() {
+    brokenFiletable.clear();
+    for (auto &i : fileBlocksTable) {
+        const auto &nonRecievedBlocksInfo = i.second.getNonRecievedBlocksInfo();
+        if (!nonRecievedBlocksInfo.empty())
+            brokenFiletable.insert(make_pair(i.first, nonRecievedBlocksInfo));
+    }
+
+    return brokenFiletable;
 }
 
 const vector<string> &
-FilesTable::getNonCompleteFilesNames( )
-{
-	brokenFilesNames.clear( );
+FilesTable::getNonCompleteFilesNames() {
+    brokenFilesNames.clear();
 
-	for ( auto &i: fileBlocksTable )
-		if ( !i.second.complete( ) )
-			brokenFilesNames.push_back( i.first );
+    for (auto &i : fileBlocksTable)
+        if (!i.second.complete())
+            brokenFilesNames.push_back(i.first);
 
-	return brokenFilesNames;
+    return brokenFilesNames;
 }
 
 vector<FilesTable::FileInfo>&
-FilesTable::getArchiveContent( )
-{
-	archiveContent.clear( );
-	for ( auto &i: fileBlocksTable )
-	{
-		FileInfo info;
-		info.fileName = i.first;
-		if ( i.second.complete( ) )
-			info.corrupted = false;
-		else
-			info.corrupted = true;
-		archiveContent.push_back( info );
-	}
-	return archiveContent;
+FilesTable::getArchiveContent() {
+    archiveContent.clear();
+    for (auto &i : fileBlocksTable) {
+        FileInfo info;
+        info.fileName = i.first;
+        if (i.second.complete())
+            info.corrupted = false;
+        else
+            info.corrupted = true;
+        archiveContent.push_back(info);
+    }
+    return archiveContent;
 }

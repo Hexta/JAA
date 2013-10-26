@@ -29,8 +29,8 @@ CompressorThread::compress() {
 
   vector<QString> relIFileNames;
 
-  for (QStringList::Iterator i = iFileNames.begin(); i != iFileNames.end(); ++i)
-    relIFileNames.push_back(compressBaseDir.relativeFilePath(*i));
+  for (auto &filename: iFileNames)
+    relIFileNames.push_back(compressBaseDir.relativeFilePath(filename));
 
   auto sequence = compressSequence.toStdList();
   switch (compressor.compress(relIFileNames, destFileName, blocksize, sequence)) {

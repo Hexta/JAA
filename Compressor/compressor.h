@@ -38,7 +38,7 @@ public:
   setRunStatus(RunStatus status) {
     runStatus = status;
   }
-
+  
   RunStatus
   getRunStatus() const {
     return runStatus;

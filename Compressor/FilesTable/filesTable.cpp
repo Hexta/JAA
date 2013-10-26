@@ -64,7 +64,7 @@ FilesTable::clean( )
 unsigned int
 FilesTable::getId( DataBlockHeader * inHeader ) const
 {
-	map< string, FileBlocksInfo >::const_iterator i = fileBlocksTable.find( string( inHeader->getFileName( ) ) );
+	auto i = fileBlocksTable.find( string( inHeader->getFileName( ) ) );
 	if ( i == fileBlocksTable.end( ) )
 		return 0;
 	return i->second.getId( );
@@ -73,7 +73,7 @@ FilesTable::getId( DataBlockHeader * inHeader ) const
 unsigned int
 FilesTable::getId( string fileName ) const
 {
-	map< string, FileBlocksInfo >::const_iterator i = fileBlocksTable.find( fileName );
+	auto i = fileBlocksTable.find( fileName );
 	if ( i == fileBlocksTable.end( ) )
 		return 0;
 	return i->second.getId( );
@@ -85,43 +85,41 @@ FilesTable::remove( DataBlockHeader * inHeader )
 	fileBlocksTable.erase( string( inHeader->getFileName( ) ) );
 }
 
-map< string, vector <uint32_t> > *
+map< string, vector <uint32_t> > &
 FilesTable::getNonCompleteFilesBlocksInfo( )
 {
 	brokenFiletable.clear( );
-	for ( map< string, FileBlocksInfo >::iterator i = fileBlocksTable.begin( ), end = fileBlocksTable.end( ); i != end; ++i )
-		if ( i->second.getNonRecievedBlocksInfo( ) )
-			brokenFiletable.insert( make_pair( i->first, *( i->second.getNonRecievedBlocksInfo( ) ) ) );
-	return &brokenFiletable;
+	for ( auto &i: fileBlocksTable )
+		if ( i.second.getNonRecievedBlocksInfo( ) )
+			brokenFiletable.insert( make_pair( i.first, *( i.second.getNonRecievedBlocksInfo( ) ) ) );
+	return brokenFiletable;
 }
 
-vector<string> *
+const vector<string> &
 FilesTable::getNonCompleteFilesNames( )
 {
 	brokenFilesNames.clear( );
 
-	for ( map< string, FileBlocksInfo >::iterator i = fileBlocksTable.begin( ), end = fileBlocksTable.end( ); i != end; ++i )
-		if ( !i->second.complete( ) )
-			brokenFilesNames.push_back( i->first );
-	if ( brokenFilesNames.empty( ) )
-		return NULL;
+	for ( auto &i: fileBlocksTable )
+		if ( !i.second.complete( ) )
+			brokenFilesNames.push_back( i.first );
 
-	return &brokenFilesNames;
+	return brokenFilesNames;
 }
 
-vector<FilesTable::FileInfo>*
+vector<FilesTable::FileInfo>&
 FilesTable::getArchiveContent( )
 {
 	archiveContent.clear( );
-	for ( map< string, FileBlocksInfo >::iterator i = fileBlocksTable.begin( ), end = fileBlocksTable.end( ); i != end; ++i )
+	for ( auto &i: fileBlocksTable )
 	{
 		FileInfo info;
-		info.fileName = i->first;
-		if ( i->second.complete( ) )
+		info.fileName = i.first;
+		if ( i.second.complete( ) )
 			info.corrupted = false;
 		else
 			info.corrupted = true;
 		archiveContent.push_back( info );
 	}
-	return &archiveContent;
+	return archiveContent;
 }

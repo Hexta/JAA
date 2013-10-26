@@ -32,8 +32,8 @@ CompressorThread::compress() {
   for (QStringList::Iterator i = iFileNames.begin(); i != iFileNames.end(); ++i)
     relIFileNames.push_back(compressBaseDir.relativeFilePath(*i));
 
-  std::list<Compressor::CoderTypes> sequence = compressSequence.toStdList();
-  switch (compressor.compress(relIFileNames, destFileName, blocksize, &sequence)) {
+  auto sequence = compressSequence.toStdList();
+  switch (compressor.compress(relIFileNames, destFileName, blocksize, sequence)) {
   case CompressorStatus::OUTPUT_FILE_WRITE_ERROR:fail = true;
     break;
   default: fail = false;

@@ -80,7 +80,7 @@ public:
    */
   CompressorStatus::ErrorCode compress(const vector<QString> &iFileNames,
       const QString &oFileName, unsigned int blocksize,
-      const list<CoderTypes> *compressSequence = NULL);
+      const list<CoderTypes> &compressSequence);
   /**
    * Decompress archive
    * @param iFileName		archive filename
@@ -125,7 +125,7 @@ private:
   void showInfo(CompressorStatus::ErrorCode errorCode,
       const char * currFileName, unsigned int id = 0);
 
-  void compress(const list<CoderTypes> *compressSequence = NULL);
+  void compress(const list<CoderTypes> &compressSequence);
   bool decompress();
 
   bool createEmptyFile(const char * fileName);
@@ -172,11 +172,9 @@ private:
 };
 
 void inline
-Compressor::compress(const list<CoderTypes> *compressSequence) {
+Compressor::compress(const list<CoderTypes> &compressSequence) {
   Encoder encoder(block, &codec);
-  const list<CoderTypes> *sequence =
-      compressSequence ? compressSequence : &defaultCompressSequence;
-  std::for_each(sequence->begin(), sequence->end(), encoder);
+  std::for_each(compressSequence.begin(), compressSequence.end(), encoder);
 }
 
 bool inline

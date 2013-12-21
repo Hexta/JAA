@@ -1,9 +1,19 @@
-/* 
- * File:   DataBlocksTable.cpp
- * Author: art
- * 
- * Created on 12 Март 2011 г., 9:10
- */
+/******************************************************************************
+ * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
 
 #include "filesTable.h"
 #include "../DataBlock/dataBlockHeader.h"
@@ -12,23 +22,29 @@ FilesTable::FilesTable() : fileBlocksTable(), brokenFiletable(), brokenFilesName
 
 FilesTable::~FilesTable() { }
 
-int
+using JAA::FileBlockResult;
+
+
+JAA::FileBlockResult
 FilesTable::add(DataBlockHeader * inHeader, unsigned int id) {
-    int result = 0;
+    FileBlockResult result = FileBlockResult::OK;
 
     auto pos = fileBlocksTable.find(string(inHeader->getFileName()));
 
     if (pos == fileBlocksTable.end()) {
         FileBlocksInfo blockInfo(inHeader->getPartsCount(), id);
 
-        result = FIRST_RECIEVED_BLOCK;
+        result = FileBlockResult::FIRST_RECIEVED_BLOCK;
 
         switch (blockInfo.setRecievedBlock(inHeader->getPart())) {
-            case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
+            case FileBlockResult::BLOCK_OUT_OF_RANGE:
+              result = FileBlockResult::BLOCK_OUT_OF_RANGE;
                 break;
-            case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
+            case FileBlockResult::ALL_BLOCKS_RECIEVED:
+              result = FileBlockResult::ALL_BLOCKS_RECIEVED;
                 break;
-            case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
+            case FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK:
+              result = FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK;
                 break;
             default:break;
         }
@@ -36,11 +52,14 @@ FilesTable::add(DataBlockHeader * inHeader, unsigned int id) {
         fileBlocksTable.insert(map< string, FileBlocksInfo >::value_type(inHeader->getFileName(), blockInfo));
     } else {
         switch (pos->second.setRecievedBlock(inHeader->getPart())) {
-            case BLOCK_OUT_OF_RANGE:result = BLOCK_OUT_OF_RANGE;
+            case FileBlockResult::BLOCK_OUT_OF_RANGE:
+              result = FileBlockResult::BLOCK_OUT_OF_RANGE;
                 break;
-            case ALL_BLOCKS_RECIEVED:result = ALL_BLOCKS_RECIEVED;
+            case FileBlockResult::ALL_BLOCKS_RECIEVED:
+              result = FileBlockResult::ALL_BLOCKS_RECIEVED;
                 break;
-            case FIRST_AND_LAST_RECIEVED_BLOCK:result = FIRST_AND_LAST_RECIEVED_BLOCK;
+            case FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK:
+              result = FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK;
                 break;
             default:break;
         }

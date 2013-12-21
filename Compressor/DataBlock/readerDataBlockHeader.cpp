@@ -1,9 +1,19 @@
-/* 
- * File:   ReaderDataBlockHeader.cpp
- * Author: art
- * 
- * Created on 12 Март 2011 г., 17:35
- */
+/******************************************************************************
+ * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
 
 #include "readerDataBlockHeader.h"
 #include  "dataBlockHeader.h"
@@ -16,29 +26,29 @@ ReaderDataBlockHeader::ReaderDataBlockHeader() { }
 
 ReaderDataBlockHeader::~ReaderDataBlockHeader() { }
 
-int
+JAA::FileIOResult
 ReaderDataBlockHeader::read(DataBlockHeader * outHeader, QFile &in, bool recoverMode) {
   if (recoverMode) {
     if (find(outHeader, in)) {
-      return FILE_END;
+      return JAA::FileIOResult::FILE_END;
     }
   } else {
     unsigned char in_header_data[HEADER_SIZE];
     unsigned int receivedBytesCount = in.read((char*) in_header_data, HEADER_SIZE);
 
     if (receivedBytesCount == 0)
-      return FILE_END;
+      return JAA::FileIOResult::FILE_END;
 
     else if (receivedBytesCount < HEADER_SIZE)
-      return FILE_TOO_SMALL;
+      return JAA::FileIOResult::FILE_TOO_SMALL;
 
     outHeader->setData(in_header_data);
 
     if (outHeader->checkCRC())
-      return FILE_BROKEN;
+      return JAA::FileIOResult::FILE_BROKEN;
   }
 
-  return 0;
+  return JAA::FileIOResult::OK;
 }
 
 bool
@@ -49,7 +59,8 @@ ReaderDataBlockHeader::find(DataBlockHeader *outHeader, QFile &fin) {
 
   while ((nReadBytes = fin.read((char*) buffer, BUFFER_SIZE)) > HEADER_SIZE) {
     unsigned char * findPos =
-        std::search(buffer, buffer + nReadBytes + 1, ARCHIVER_ID, ARCHIVER_ID + 7);
+        std::search(buffer, buffer + nReadBytes + 1, JAA::ARCHIVER_ID,
+                    JAA::ARCHIVER_ID + JAA::ARCHIVER_ID_SIZE);
 
     if (findPos == buffer + nReadBytes + 1) {
       fin.seek(-(std::streamoff) (HEADER_SIZE - 1) + fin.pos());

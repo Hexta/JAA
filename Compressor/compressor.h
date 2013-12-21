@@ -1,23 +1,34 @@
-/* 
- * File:   Compressor.h
- * Author: art
- *
- * Created on 5 Февраль 2011 г., 20:56
- */
+/******************************************************************************
+ * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
 
 #ifndef COMPRESSOR_H
 #define	COMPRESSOR_H
 
-#include <list>
 #include "./Codec/codec.h"
 #include "FilesTable/filesTable.h"
 #include "DataBlock/dataBlockHeader.h"
+
+#include <list>
 
 class CompressorStatus {
 public:
 
   CompressorStatus()
-      : runStatus(RUN) { };
+  : runStatus(RUN) { };
 
   enum RunStatus {
     RUN, STOP
@@ -38,7 +49,7 @@ public:
   setRunStatus(RunStatus status) {
     runStatus = status;
   }
-  
+
   RunStatus
   getRunStatus() const {
     return runStatus;
@@ -148,20 +159,20 @@ public:
 
   void operator()(Compressor::CoderTypes coderType) {
     switch (coderType) {
-    case Compressor::BWT:
-      codec->encode_BWT(block);
-      break;
-    case Compressor::RLE:
-      codec->encode_RLE(block);
-      break;
-    case Compressor::MTF:
-      codec->encode_MTF(block);
-      break;
-    case Compressor::HUFFMAN:
-      codec->encode_HUFF(block);
-      break;
-    default:
-      break;
+      case Compressor::BWT:
+        codec->encode_BWT(block);
+        break;
+      case Compressor::RLE:
+        codec->encode_RLE(block);
+        break;
+      case Compressor::MTF:
+        codec->encode_MTF(block);
+        break;
+      case Compressor::HUFFMAN:
+        codec->encode_HUFF(block);
+        break;
+      default:
+        break;
     }
   }
 private:
@@ -180,22 +191,22 @@ Compressor::compress(const list<CoderTypes> &compressSequence) {
 bool inline
 Compressor::decompress() {
   uint64_t id;
-  while ((id = block->getHeader()->getId()) != RAW_ID) {
+  while ((id = block->getHeader()->getId()) != JAA::CodecID::RAW_ID) {
     switch (id) {
-    case HUFF_ID:
-      codec.decode_HUFF(block);
-      break;
-    case RLE_ID:
-      codec.decode_RLE(block);
-      break;
-    case BWT_ID:
-      codec.decode_BWT(block);
-      break;
-    case MTF_ID:
-      codec.decode_MTF(block);
-      break;
-    default:
-      return -1;
+      case JAA::CodecID::HUFF_ID:
+        codec.decode_HUFF(block);
+        break;
+      case JAA::CodecID::RLE_ID:
+        codec.decode_RLE(block);
+        break;
+      case JAA::CodecID::BWT_ID:
+        codec.decode_BWT(block);
+        break;
+      case JAA::CodecID::MTF_ID:
+        codec.decode_MTF(block);
+        break;
+      default:
+        return -1;
     }
   }
   return 0;
@@ -206,7 +217,7 @@ Compressor::showDecodingProgress(const char * currFileName,
     float speed) {
   if (status)
     status->showProgress(
-      (encodedDataSize) ? (float) currReadBytesCount / encodedDataSize : 0,
+      encodedDataSize ? static_cast<float> (currReadBytesCount) / encodedDataSize : 0,
       QString::fromUtf8(currFileName, strlen(currFileName)), speed);
 }
 
@@ -215,13 +226,13 @@ Compressor::showEncodingProgress(const QString &currFileName,
     const float speed) {
   if (status)
     status->showProgress(
-      (decodedDataSize) ? (float) currReadBytesCount / decodedDataSize : 0,
+      decodedDataSize ? static_cast<float> (currReadBytesCount) / decodedDataSize : 0,
       currFileName, speed);
 }
 
 float inline
 Compressor::speed(unsigned int nBytes, clock_t elapsedTime) {
-  return (elapsedTime) ? nBytes / ((double) elapsedTime / CLOCKS_PER_SEC) : 0;
+  return elapsedTime ? nBytes / (static_cast<double> (elapsedTime) / CLOCKS_PER_SEC) : 0;
 }
 
 void inline

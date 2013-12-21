@@ -108,5 +108,5 @@ Codec_RLE::encode_RLE(DataBlock* inData) {
   encodedDataSize = buffer.size();
   inData->setData(buffer.data(), buffer.size());
 
-  recordOutHeader(inData->getHeader(), RLE_ID);
+  recordOutHeader(inData->getHeader(), JAA::CodecID::RLE_ID);
 }

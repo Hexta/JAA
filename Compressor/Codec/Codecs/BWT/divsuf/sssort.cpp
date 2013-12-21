@@ -775,10 +775,9 @@ ss_swapmerge(const uint8_t *T, const int32_t *PA,
   stack < StackDataT2 > stack;
   int32_t *l, *r, *lm, *rm;
   int32_t m, len, half;
-  int32_t ssize;
   int32_t check, next;
 
-  for (check = 0, ssize = 0;;) {
+  for (check = 0;;) {
     if ((last - middle) <= bufsize) {
       if ((first < middle) && (middle < last)) {
         ss_mergebackward(T, PA, first, middle, last, buf, depth);

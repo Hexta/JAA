@@ -1,18 +1,29 @@
-/* 
- * File:   dataBlock.cpp
- * Author: art
- * 
- * Created on 21 Январь 2011 г., 19:07
- */
+/******************************************************************************
+ * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
+
+#include "dataBlock.h"
+#include "dataBlockHeader.h"
+#include "readerDataBlockHeader.h"
 
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <fstream>
-#include "dataBlock.h"
-#include "dataBlockHeader.h"
-#include "readerDataBlockHeader.h"
 
 #define MIN_RAW_BLOCK_SIZE (100000)
 
@@ -22,17 +33,17 @@ using namespace std;
  * TODO:setBlockSize*2 <-- !
  */
 DataBlock::DataBlock(unsigned int setBlockSize) : data(new dataT(setBlockSize * 2)),
-    dataSize(0), nBytesToRead(setBlockSize), header(new DataBlockHeader()), 
-    outBlock(new dataT(setBlockSize * 2)),
-    recoveryMode(false) { }
+dataSize(0), nBytesToRead(setBlockSize), header(new DataBlockHeader()),
+outBlock(new dataT(setBlockSize * 2)),
+recoveryMode(false) { }
 
 DataBlock::DataBlock() : data(new vector < unsigned char >), dataSize(0), nBytesToRead(0),
-    header(new DataBlockHeader()), outBlock(NULL), recoveryMode(false) {
+header(new DataBlockHeader()), outBlock(NULL), recoveryMode(false) {
   data->reserve(MIN_RAW_BLOCK_SIZE);
 }
 
 DataBlock::DataBlock(unsigned char *inData) : data(NULL), dataSize(0),
-    nBytesToRead(0), header(NULL), outBlock(NULL), recoveryMode(false) {
+nBytesToRead(0), header(NULL), outBlock(NULL), recoveryMode(false) {
   unsigned char in_header_data[HEADER_SIZE];
   memcpy(in_header_data, inData, HEADER_SIZE);
 
@@ -58,7 +69,7 @@ DataBlockHeader *
 DataBlock::readRAW(QFile &in) {
   uint64_t offset = in.pos();
   data->resize(nBytesToRead);
-  dataSize = in.read((char*) data->data(), nBytesToRead);
+  dataSize = static_cast<uint32_t> (in.read(reinterpret_cast<char*> (data->data()), nBytesToRead));
   if (!dataSize)
     return NULL;
 
@@ -70,20 +81,20 @@ DataBlock::readRAW(QFile &in) {
   return header;
 }
 
-int
+JAA::FileIOResult
 DataBlock::read(QFile &in) {
   ReaderDataBlockHeader readerHeader;
 
   switch (readerHeader.read(header, in, recoveryMode)) {
-  case FILE_END: return FILE_END;
-    break;
-  case FILE_TOO_SMALL: return FILE_TOO_SMALL;
-    break;
-  case FILE_BROKEN:
-    recoveryMode = true;
-    return HEADER_CORRUPTED;
-    break;
-  default:;
+    case JAA::FileIOResult::FILE_END: return JAA::FileIOResult::FILE_END;
+      break;
+    case JAA::FileIOResult::FILE_TOO_SMALL: return JAA::FileIOResult::FILE_TOO_SMALL;
+      break;
+    case JAA::FileIOResult::FILE_BROKEN:
+      recoveryMode = true;
+      return JAA::FileIOResult::HEADER_CORRUPTED;
+      break;
+    default:;
   }
 
   data->clear();
@@ -91,13 +102,15 @@ DataBlock::read(QFile &in) {
   uint32_t origDataSize = header->getEncodedDataSize();
 
   data->resize(origDataSize);
-  dataSize = in.read((char*) data->data(), origDataSize);
+  dataSize =
+      static_cast<uint32_t> (in.read(reinterpret_cast<char*> (data->data()),
+                                     origDataSize));
 
   if ((dataSize != origDataSize) || (checkCRC())) {
 
-    return FILE_BROKEN;
+    return JAA::FileIOResult::FILE_BROKEN;
   }
-  return 0;
+  return JAA::FileIOResult::OK;
 }
 
 unsigned char *
@@ -120,7 +133,7 @@ void
 DataBlock::write(QFile &out) {
   recordCRC();
   getBlock();
-  out.write((char*) outBlock->data(), outBlock->size());
+  out.write(reinterpret_cast<char*> (outBlock->data()), outBlock->size());
 }
 
 DataBlockHeader *
@@ -165,18 +178,18 @@ DataBlock::recordCRC() {
   header->recordCRC();
 }
 
-int
+JAA::FileIOResult
 DataBlock::writeRAW() {
   char * oFileName = header ->getFileName();
-  QFile fout(QString::fromUtf8(oFileName, strlen(oFileName)));
+  QFile fout(QString::fromUtf8(oFileName, static_cast<int> (strlen(oFileName))));
 
   if (!fout.open(QIODevice::ReadWrite))
-    return OUTPUT_ERROR;
+    return JAA::FileIOResult::OUTPUT_ERROR;
 
   fout.seek(header->getOffset());
 
-  fout.write((char*) data->data(), data->size());
+  fout.write(reinterpret_cast<char*> (data->data()), data->size());
   fout.close();
 
-  return 0;
+  return JAA::FileIOResult::OK;
 }

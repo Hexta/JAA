@@ -1,16 +1,31 @@
-/* 
- * File:   Compressor.cpp
- * Author: art
- * 
- * Created on 5 Февраль 2011 г., 20:56
- */
+/******************************************************************************
+ * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
+ ******************************************************************************/
+
+#include "compressor.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <math.h>
 #include <time.h>
+
 #include <QFile>
-#include "compressor.h"
+
+using JAA::FileIOResult;
+using JAA::FileBlockResult;
 
 void
 CompressorStatus::showProgress(float, const QString&, float) { }
@@ -97,7 +112,7 @@ Compressor::compress(
             continue;
         }
 
-        uint32_t partsCount = ceil((float) fin.size() / blocksize);
+        uint32_t partsCount = ceil(static_cast<float> (fin.size()) / blocksize);
         uint32_t part = 0;
 
         while (1) {
@@ -181,11 +196,11 @@ Compressor::decompress(const QString &iFileName,
     bool stop = false;
     while (!stop) {
         switch (block->read(fin)) {
-            case FILE_END:
+          case FileIOResult::FILE_END:
                 stop = true;
                 continue;
 
-            case FILE_BROKEN:
+            case FileIOResult::FILE_BROKEN:
             {
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 unsigned id = blocksTable.getId(header);
@@ -194,13 +209,13 @@ Compressor::decompress(const QString &iFileName,
                          id);
                 continue;
             }
-            case HEADER_CORRUPTED:
+            case FileIOResult::HEADER_CORRUPTED:
             {
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 showInfo(CompressorStatus::INPUT_FILE_CORRUPTED);
                 continue;
             }
-            case FILE_TOO_SMALL:
+            case FileIOResult::FILE_TOO_SMALL:
             {
                 if (keepBroken == false) removeBrokenFiles();
                 showInfo(CompressorStatus::INPUT_FILE_CORRUPTED);
@@ -231,7 +246,7 @@ Compressor::decompress(const QString &iFileName,
         }
 
         switch (blocksTable.add(header, nextId)) {
-            case FIRST_AND_LAST_RECIEVED_BLOCK:
+            case FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK:
                 blocksTable.remove(header);
                 if (!createEmptyFile(header->getFileName())) {
                     showInfo(CompressorStatus::OUTPUT_FILE_WRITE_ERROR);
@@ -240,19 +255,19 @@ Compressor::decompress(const QString &iFileName,
                 showInfo(CompressorStatus::SUCCESS, header->getFileName(), nextId++);
                 break;
 
-            case FIRST_RECIEVED_BLOCK:
+            case FileBlockResult::FIRST_RECIEVED_BLOCK:
                 createEmptyFile(header->getFileName());
                 showInfo(CompressorStatus::PROCEED, header->getFileName(), nextId++);
                 break;
 
-            case ALL_BLOCKS_RECIEVED:
+            case FileBlockResult::ALL_BLOCKS_RECIEVED:
                 showInfo(CompressorStatus::SUCCESS, header->getFileName(),
                          blocksTable.getId(header));
                 blocksTable.remove(header);
                 break;
 
-            case BLOCK_OUT_OF_RANGE:
-            case BLOCK_ALREADY_RECIEVED:
+            case FileBlockResult::BLOCK_OUT_OF_RANGE:
+            case FileBlockResult::BLOCK_ALREADY_RECIEVED:
                 showInfo(CompressorStatus::INPUT_FILE_CORRUPTED);
                 return error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 break;
@@ -261,7 +276,7 @@ Compressor::decompress(const QString &iFileName,
                 break;
         }
 
-        if (block->writeRAW()) {
+        if (block->writeRAW() != FileIOResult::OK) {
             delete block;
             fin.close();
             showInfo(CompressorStatus::OUTPUT_FILE_WRITE_ERROR);
@@ -355,11 +370,11 @@ Compressor::listArchiveContents(
 
         clock_t startTime = clock();
         switch (block->read(fin)) {
-            case FILE_END:
+            case FileIOResult::FILE_END:
                 stop = true;
                 continue;
 
-            case FILE_BROKEN:
+            case FileIOResult::FILE_BROKEN:
             {
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
 
@@ -377,14 +392,14 @@ Compressor::listArchiveContents(
                 continue;
             }
 
-            case HEADER_CORRUPTED:
+            case FileIOResult::HEADER_CORRUPTED:
             {
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 showInfo(error);
                 continue;
             }
 
-            case FILE_TOO_SMALL:
+            case FileIOResult::FILE_TOO_SMALL:
             {
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 showInfo(error);
@@ -405,24 +420,24 @@ Compressor::listArchiveContents(
                              speed(header->getEncodedDataSize(), stoptTime - startTime));
 
         switch (blocksTable.add(header, nextId)) {
-            case FIRST_AND_LAST_RECIEVED_BLOCK:
+          case FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK:
                 blocksTable.remove(header);
                 showInfo(CompressorStatus::INPUT_FILE_UNCORRUPTED,
                          header->getFileName(), nextId++);
                 break;
 
-            case FIRST_RECIEVED_BLOCK:
+            case FileBlockResult::FIRST_RECIEVED_BLOCK:
                 showInfo(CompressorStatus::PROCEED, header->getFileName(), nextId++);
                 break;
 
-            case ALL_BLOCKS_RECIEVED:
+            case FileBlockResult::ALL_BLOCKS_RECIEVED:
                 showInfo(CompressorStatus::INPUT_FILE_UNCORRUPTED,
                          header->getFileName(), blocksTable.getId(header));
                 blocksTable.remove(header);
                 break;
 
-            case BLOCK_OUT_OF_RANGE:
-            case BLOCK_ALREADY_RECIEVED:
+            case FileBlockResult::BLOCK_OUT_OF_RANGE:
+            case FileBlockResult::BLOCK_ALREADY_RECIEVED:
                 error = CompressorStatus::INPUT_FILE_CORRUPTED;
                 showInfo(error);
                 delete block;

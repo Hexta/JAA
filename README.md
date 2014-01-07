@@ -17,8 +17,10 @@ Allow use its in any combinations.
 ===
 
 Supported platforms:
-  * Windows XP-Vista (Tested) (MinGW) x86, amd64
-  * GNU/Linux (GCC 4.5-4.7, Qt 4.8.3) x86, amd64
+  * Windows XP-7(Tested)
+   - MinGW x86, amd64
+   - MSVC 2013
+  * GNU/Linux (GCC 4.7+, Qt 5.0) x86, amd64
 
 
 

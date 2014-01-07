@@ -55,7 +55,7 @@ Compressor::~Compressor() { }
 
 bool
 Compressor::createEmptyFile(const char * fileName) {
-    QFile fout(QString::fromUtf8(fileName, strlen(fileName)));
+    QFile fout(QString::fromUtf8(fileName, static_cast<int>(strlen(fileName))));
     if (!fout.open(QIODevice::Truncate | QIODevice::WriteOnly)) return false;
     fout.close();
     return true;
@@ -262,7 +262,7 @@ Compressor::decompress(const QString &iFileName,
 
             case FileBlockResult::ALL_BLOCKS_RECIEVED:
                 showInfo(CompressorStatus::SUCCESS, header->getFileName(),
-                         blocksTable.getId(header));
+                    blocksTable.getId(header));
                 blocksTable.remove(header);
                 break;
 
@@ -320,20 +320,19 @@ Compressor::getStat(Stat *stat) {
 void
 Compressor::removeBrokenFiles() {
     auto &nonCompleteFilesNames =
-            blocksTable.getNonCompleteFilesNames();
+        blocksTable.getNonCompleteFilesNames();
 
     if (nonCompleteFilesNames.empty()) return;
 
     for (auto &fileName : nonCompleteFilesNames)
-        QFile::remove(
-                      QString::fromUtf8(fileName.c_str(),
-                                        strlen(fileName.c_str())));
+        QFile::remove(QString::fromUtf8(fileName.c_str(),
+            static_cast<int>(strlen(fileName.c_str()))));
 
 }
 
 CompressorStatus::ErrorCode
-Compressor::listArchiveContents(
-                                const QString &iFileName, vector<FilesTable::FileInfo> * const contents/*=NULL*/) {
+Compressor::listArchiveContents(const QString &iFileName,
+    vector<FilesTable::FileInfo> * const contents/*=NULL*/) {
 
     blocksTable.clean();
     unsigned int nextId = 1;

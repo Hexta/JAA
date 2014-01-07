@@ -28,6 +28,12 @@
 #define HEADER_DATA_SIZE (436)//After Header-CRC data size
 #define MAX_FILENAME_LENGTH (400)
 
+#ifdef _MSC_VER
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+#elif defined(__GNUC__)
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
 class DataBlockHeader {
 public:
   DataBlockHeader();
@@ -85,21 +91,20 @@ public:
   initRAW(uint64_t offset, const uint32_t rawDataSize);
 
 private:
-
-  struct HeaderDataType {
-    uint64_t id;
-    uint32_t headerCRC;
-    uint64_t offset;
-    uint32_t rawDataSize;
-    uint32_t decodedDataSize;
-    uint32_t encodedDataSize;
-    uint32_t encodedDataCRC;
-    uint32_t codecParams;
-    char fileName[MAX_FILENAME_LENGTH];
-    uint32_t part;
-    uint32_t partsCount;
-
-  } __attribute__((packed)) headerData;
+    PACK(
+        struct HeaderDataType {
+            uint64_t id;
+            uint32_t headerCRC;
+            uint64_t offset;
+            uint32_t rawDataSize;
+            uint32_t decodedDataSize;
+            uint32_t encodedDataSize;
+            uint32_t encodedDataCRC;
+            uint32_t codecParams;
+            char fileName[MAX_FILENAME_LENGTH];
+            uint32_t part;
+            uint32_t partsCount;
+        }) headerData;
 
   DataBlockHeader(const DataBlockHeader&);
 

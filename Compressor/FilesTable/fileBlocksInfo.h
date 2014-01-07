@@ -20,13 +20,12 @@
 
 #include "../private/consts.h"
 
-#include <boost/dynamic_bitset.hpp>
-
+#include <memory>
 #include <string.h>
 #include <stdint.h>
 #include <vector>
 
-using namespace std;
+using std::vector;
 
 class FileBlocksInfo {
 public:
@@ -44,10 +43,11 @@ public:
 
 private:
     uint32_t blocksCount;
-    boost::dynamic_bitset<> blocks; //array of block recieving status: false - recieved, true - not
-    vector< uint32_t> nonRecievedblocks;
+    vector<uint32_t> nonRecievedblocks;
     unsigned int id; //file`s ID in archive
 
+    struct Private;
+    std::unique_ptr<Private> d;
 };
 
 #endif	/* FILEBLOCKSINFO_H */

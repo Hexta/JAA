@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
+cmake_policy(SET CMP0020 NEW)
+find_package(Qt5Widgets REQUIRED)
+add_definitions(${QT5_DEFINITIONS})
 
 set(${project}_compressor_SRC
        compressor.cpp
@@ -20,10 +20,11 @@ add_library(${project}_compressor STATIC
     ${${project}_compressor_SRC}
 )
 
+qt5_use_modules(${project}_compressor Widgets Gui Core)
+
 target_link_libraries(${project}_compressor
     ${project}_codec
     ${project}_datablock
     ${project}_filestable
     ${project}_crc
 )
-

@@ -35,6 +35,4 @@ private:
   vector <int32_t> SA;
 };
 
-
 #endif	/* CODEC_BWT_H */
-

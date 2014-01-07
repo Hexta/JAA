@@ -34,7 +34,7 @@ ReaderDataBlockHeader::read(DataBlockHeader * outHeader, QFile &in, bool recover
     }
   } else {
     unsigned char in_header_data[HEADER_SIZE];
-    unsigned int receivedBytesCount = in.read((char*) in_header_data, HEADER_SIZE);
+    unsigned int receivedBytesCount = in.read(reinterpret_cast<char*>(in_header_data), HEADER_SIZE);
 
     if (receivedBytesCount == 0)
       return JAA::FileIOResult::FILE_END;
@@ -57,7 +57,7 @@ ReaderDataBlockHeader::find(DataBlockHeader *outHeader, QFile &fin) {
 
   unsigned int nReadBytes;
 
-  while ((nReadBytes = fin.read((char*) buffer, BUFFER_SIZE)) > HEADER_SIZE) {
+  while ((nReadBytes = fin.read(reinterpret_cast<char*>(buffer), BUFFER_SIZE)) > HEADER_SIZE) {
     unsigned char * findPos =
         std::search(buffer, buffer + nReadBytes + 1, JAA::ARCHIVER_ID,
                     JAA::ARCHIVER_ID + JAA::ARCHIVER_ID_SIZE);
@@ -75,10 +75,10 @@ ReaderDataBlockHeader::find(DataBlockHeader *outHeader, QFile &fin) {
         if (!outHeader->checkCRC()) {
           //valid CRC
           fin.seek(-(std::streamoff)(nReadBytes - (findPos - buffer) - HEADER_SIZE) + fin.pos());
-          return 0;
+          return false;
         } else {
           //not valid CRC may be not header?
-          fin.seek(-(std::streamoff)(nReadBytes - (findPos - buffer) - 2) + fin.pos());
+          fin.seek(-static_cast<std::streamoff>(nReadBytes - (findPos - buffer) - 2) + fin.pos());
           //try again with offset
         }
       } else {
@@ -88,5 +88,5 @@ ReaderDataBlockHeader::find(DataBlockHeader *outHeader, QFile &fin) {
     }
   }
 
-  return -1;
+  return true;
 }

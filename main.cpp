@@ -18,13 +18,9 @@
 #include "GUI/face.h"
 
 #include <QApplication>
-#include <QTextCodec>
 
 int
 main(int argc, char *argv[]) {
-  QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-  QTextCodec::setCodecForTr(codec);
-
   QApplication app(argc, argv);
 
   Face * mainw = new Face();

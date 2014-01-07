@@ -18,21 +18,29 @@
 #include "fileBlocksInfo.h"
 #include "../private/consts.h"
 
+#include <boost/dynamic_bitset.hpp>
+
 #include <iostream>
 
 using JAA::FileBlockResult;
 
+struct FileBlocksInfo::Private {
+public:
+    Private() {};
+    boost::dynamic_bitset<> blocks; //array of block recieving status: false - recieved, true - not
+};
+
 FileBlocksInfo::FileBlocksInfo(const FileBlocksInfo& orig) : blocksCount(0),
-blocks(), nonRecievedblocks(), id() {
-    blocks.resize(orig.blocks.size());
-    blocks = orig.blocks;
+    nonRecievedblocks(), id(), d(new Private()) {
+    d->blocks.resize(orig.d->blocks.size());
+    d->blocks = orig.d->blocks;
     blocksCount = orig.blocksCount;
     id = orig.id;
 }
 
 FileBlocksInfo::FileBlocksInfo(const uint32_t _totalBlocks, unsigned int _id)
-: blocksCount(_totalBlocks), blocks(), nonRecievedblocks(), id(_id) {
-    blocks.resize(_totalBlocks, true);
+: blocksCount(_totalBlocks), nonRecievedblocks(), id(_id), d(new Private()) {
+    d->blocks.resize(_totalBlocks, true);
     nonRecievedblocks.reserve(_totalBlocks);
 }
 
@@ -40,7 +48,7 @@ FileBlocksInfo::~FileBlocksInfo() { }
 
 bool
 FileBlocksInfo::complete() {
-    return blocks.none();
+    return d->blocks.none();
 }
 
 unsigned int
@@ -57,9 +65,9 @@ JAA::FileBlockResult
 FileBlocksInfo::setRecievedBlock(uint32_t blockN) {
     if (blockN > blocksCount)
         return FileBlockResult::BLOCK_OUT_OF_RANGE;
-    if (!blocks[blockN])
+    if (!d->blocks[blockN])
         return FileBlockResult::BLOCK_ALREADY_RECIEVED;
-    blocks[blockN] = false;
+    d->blocks[blockN] = false;
 
     if (blocksCount == 1)/* when first block is the last too*/
         return FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK;
@@ -72,9 +80,9 @@ FileBlocksInfo::setRecievedBlock(uint32_t blockN) {
 vector<uint32_t> &
 FileBlocksInfo::getNonRecievedBlocksInfo() {
     nonRecievedblocks.clear();
-    if (blocks.any()) {
-        for (unsigned int i = 0; i < blocks.size(); ++i) {
-            if (blocks[i])
+    if (d->blocks.any()) {
+        for (unsigned int i = 0; i < d->blocks.size(); ++i) {
+            if (d->blocks[i])
                 nonRecievedblocks.push_back(i);
         }
     }

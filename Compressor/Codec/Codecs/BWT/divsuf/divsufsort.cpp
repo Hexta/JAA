@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include "divsufsort_private.h"
 
+#include <algorithm>
+
 /*- Private Functions -*/
 
 /* Sorts suffixes of type B*. */

@@ -26,6 +26,7 @@ Codec_MTF::decode_MTF(DataBlock* inData) {
   initDecoder(inData);
 
   buffer.reserve(decodedDataSize);
+  buffer.resize(encodedDataSize);
 
   init_mtf(256);
 
@@ -42,6 +43,7 @@ Codec_MTF::encode_MTF(DataBlock* inData) {
   encodedDataSize = decodedDataSize;
 
   buffer.reserve(encodedDataSize);
+  buffer.resize(decodedDataSize);
 
   init_mtf(256);
 
@@ -59,12 +61,19 @@ Codec_MTF::init_mtf(int tsize) {
       head =
       tail = NULL;
 
-  table.reserve(tsize);
+  table.resize(tsize + 1);
   /* initialize the list. */
   for (int i = tsize; i-- > 0;) {
     table[i].c = i;
-    table[i].next = &table[i - 1];
-    table[i].prev = &table[i + 1];
+ 
+    if (i >=1) {
+        table[i].next = &table[i - 1];
+    }
+
+    if (i < tsize)
+    {
+        table[i].prev = &table[i + 1];
+    }
   }
 
   table[tsize - 1].prev = NULL;

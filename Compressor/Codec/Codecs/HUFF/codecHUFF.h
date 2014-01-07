@@ -33,4 +33,3 @@ private:
 };
 
 #endif	/* CODEC_HUFF_H */
-

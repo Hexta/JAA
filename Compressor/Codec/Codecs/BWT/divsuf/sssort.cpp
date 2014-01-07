@@ -25,13 +25,15 @@
  */
 
 #include "divsufsort_private.h"
+
+#include <algorithm>
 #include <stack>
 #include <vector>
 
-using namespace std;
+using std::min;
+using std::swap;
 
 /*- Private Functions -*/
-
 
 const int32_t lg_table[256] = {
   -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,

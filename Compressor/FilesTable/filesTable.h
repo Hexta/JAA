@@ -48,15 +48,13 @@ public:
   vector<FileInfo>& getArchiveContent();
   void clean();
   unsigned int getId(DataBlockHeader * inHeader) const;
-  unsigned int getId(string fileName) const;
+  unsigned int getId(const string& fileName) const;
 
 private:
   map< string, FileBlocksInfo > fileBlocksTable; //сведения о полученных блоках файла
   map< string, vector <uint32_t> > brokenFiletable;
   vector <string> brokenFilesNames;
   vector<FileInfo> archiveContent;
-
 };
 
 #endif	/* DATABLOCKSTABLE_H */
-

@@ -22,6 +22,10 @@
 #include "FilesTable/filesTable.h"
 #include "DataBlock/dataBlockHeader.h"
 
+#include <QString>
+
+#include <algorithm>
+#include <ctime>
 #include <list>
 
 class CompressorStatus {
@@ -78,7 +82,7 @@ public:
   };
 
   enum CoderTypes {
-    NONE, RLE, BWT, MTF, HUFFMAN
+    NONE = 0, RLE, BWT, MTF, HUFFMAN
   };
 
   /**
@@ -206,10 +210,10 @@ Compressor::decompress() {
         codec.decode_MTF(block);
         break;
       default:
-        return -1;
+        return true;
     }
   }
-  return 0;
+  return false;
 }
 
 void inline
@@ -218,7 +222,8 @@ Compressor::showDecodingProgress(const char * currFileName,
   if (status)
     status->showProgress(
       encodedDataSize ? static_cast<float> (currReadBytesCount) / encodedDataSize : 0,
-      QString::fromUtf8(currFileName, strlen(currFileName)), speed);
+      QString::fromUtf8(currFileName, static_cast<int>(strlen(currFileName))),
+      speed);
 }
 
 void inline
@@ -248,7 +253,8 @@ Compressor::showInfo(CompressorStatus::ErrorCode errorCode,
   if (!currFileName)
     fileName = "";
   else
-    fileName = QString::fromUtf8(currFileName, strlen(currFileName));
+    fileName = QString::fromUtf8(currFileName,
+    static_cast<int>(strlen(currFileName)));
   if (status) status->showInfo(errorCode, fileName, id);
 }
 

@@ -31,8 +31,7 @@ public:
 
 private:
   int mtf(int c);
-  int
-  get_mtf_c(int i);
+  int get_mtf_c(int i);
 
   typedef struct mtf_list {
     int c;
@@ -44,7 +43,6 @@ private:
   mtf_list_t *p, *head, *tail;
 
   void init_mtf(int tsize);
-
 };
 
 inline int
@@ -100,4 +98,3 @@ Codec_MTF::get_mtf_c(int i) {
 }
 
 #endif	/* CODEC_MTF_H */
-

@@ -21,8 +21,6 @@
 #include "../private/consts.h"
 #include "../CRC/crc.h"
 
-#include <QFile>
-
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -33,6 +31,7 @@ using namespace std;
 
 typedef vector < unsigned char > dataT;
 
+class QFile;
 class DataBlockHeader;
 
 class DataBlock {

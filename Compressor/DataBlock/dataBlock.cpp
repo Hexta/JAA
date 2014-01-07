@@ -19,6 +19,8 @@
 #include "dataBlockHeader.h"
 #include "readerDataBlockHeader.h"
 
+#include <QFile>
+
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
@@ -26,8 +28,6 @@
 #include <fstream>
 
 #define MIN_RAW_BLOCK_SIZE (100000)
-
-using namespace std;
 
 /*
  * TODO:setBlockSize*2 <-- !

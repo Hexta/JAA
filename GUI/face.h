@@ -20,7 +20,6 @@
 
 #include "compressorThread.h"
 
-#include <QFileDialog>
 #include <QMainWindow>
 
 class FileList;

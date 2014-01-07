@@ -82,7 +82,7 @@ FilesTable::getId(DataBlockHeader * inHeader) const {
 }
 
 unsigned int
-FilesTable::getId(string fileName) const {
+FilesTable::getId(const string& fileName) const {
     auto i = fileBlocksTable.find(fileName);
     if (i == fileBlocksTable.end())
         return 0;

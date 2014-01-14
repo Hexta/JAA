@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(${project}_divsuf_SRC
+set(${PROJECT_NAME}_divsuf_SRC
     divsufsort.cpp
     sssort.cpp
     trsort.cpp
@@ -9,10 +9,10 @@ set(${project}_divsuf_SRC
 include_directories(${CMAKE_SOURCE_DIR})
 
 
-add_library(${project}_divsuf STATIC
-    ${${project}_divsuf_SRC}
+add_library(${PROJECT_NAME}_divsuf STATIC
+    ${${PROJECT_NAME}_divsuf_SRC}
 )
 
-target_link_libraries(${project}_divsuf
+target_link_libraries(${PROJECT_NAME}_divsuf
 )
 

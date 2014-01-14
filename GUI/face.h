@@ -15,18 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef _FACE_H
-#define	_FACE_H
+#pragma once
 
 #include "compressorThread.h"
 
 #include <QMainWindow>
-
-class FileList;
-class QProgressDialog;
-class CompressSettingsPanel;
-class DecompressSettingsPanel;
-class StatInfoW;
 
 namespace Ui {
 
@@ -57,53 +50,9 @@ public slots:
   void setDecompressSettings(bool keepBrokenFiles);
 
 private:
-  CompressSettingsPanel *compressSettingsPanel;
-  DecompressSettingsPanel *decompressSettingsPanel;
+  struct Private;
 
-  StatInfoW *statInfoW;
-
-  CompressorThread *compressThread;
-  CompressorThread *decompressThread;
-  CompressorThread *listArchiveThread;
-  Ui::face *widget;
-  Compressor *compressor;
-
-  QToolBar *actionToolBar;
-
-  FileList *filelist;
-
-  QStringList sourceFileNames;
-  QStringList encodedfileNames;
-
-  QString destFileName;
-  QString destDirName;
-
-  QDir compressBaseDir;
-  QDir decompressBaseDir;
-
-  QDockWidget *compressSettingsDock;
-  QDockWidget *decompressSettingsDock;
-
-  QAction *selectFilesToCompressAction;
-  QAction *selectFileToDecompressAction;
-  QAction *compressAction;
-  QAction *decompressAction;
-  QAction *exitAction;
-  QAction *aboutAction;
-  QAction *aboutQtAction;
-
-  QMenu *fileMenu;
-  QMenu *helpMenu;
-
-  QProgressDialog *compressingProgressDialog;
-  QProgressDialog *decompressingProgressDialog;
-  QProgressDialog *listArchiveContentsProgressDialog;
-
-  bool brokenFileWarningShown;
-
-  QList< Compressor::CoderTypes> compressSequence;
-  unsigned int blockSize;
-  bool keepBrokenFiles;
+  std::unique_ptr<Private> d;
 
   void createActions();
   void createToolBars();
@@ -115,6 +64,3 @@ private:
 private slots:
   void initSettings();
 };
-
-
-#endif	/* _FACE_H */

@@ -7,7 +7,7 @@ find_package(Qt5Widgets REQUIRED)
 
 add_definitions(${QT5_DEFINITIONS})
 
-set(${project}_datablock_SRC
+set(${PROJECT_NAME}_datablock_SRC
        dataBlock.cpp
        dataBlockHeader.cpp
        readerDataBlockHeader.cpp
@@ -16,12 +16,12 @@ set(${project}_datablock_SRC
 include_directories(${CMAKE_SOURCE_DIR})
 
 
-add_library(${project}_datablock STATIC
-    ${${project}_datablock_SRC}
+add_library(${PROJECT_NAME}_datablock STATIC
+    ${${PROJECT_NAME}_datablock_SRC}
 )
 
-qt5_use_modules(${project}_datablock Widgets Gui Core OpenGL)
+qt5_use_modules(${PROJECT_NAME}_datablock Widgets Gui Core OpenGL)
 
-target_link_libraries(${project}_datablock
+target_link_libraries(${PROJECT_NAME}_datablock
     ${QT_LIBRARIES}
 )

@@ -15,10 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef COMPRESSOR_H
-#define	COMPRESSOR_H
+#pragma once
 
-#include "./Codec/codec.h"
+#include "Compressor/Codec/codec.h"
 #include "FilesTable/filesTable.h"
 #include "DataBlock/dataBlockHeader.h"
 
@@ -29,8 +28,8 @@
 #include <list>
 
 class CompressorStatus {
-public:
 
+public:
   CompressorStatus()
   : runStatus(RUN) { };
 
@@ -127,7 +126,7 @@ private:
   off_t decodedDataSize;
   off_t encodedDataSize;
   uint32_t totalProcessingTime;
-  unsigned int source_data_size;
+  unsigned int sourceDataSize;
   FilesTable blocksTable;
   CompressorStatus::ErrorCode error;
   vector<FilesTable::FileInfo> contents;
@@ -257,5 +256,3 @@ Compressor::showInfo(CompressorStatus::ErrorCode errorCode,
     static_cast<int>(strlen(currFileName)));
   if (status) status->showInfo(errorCode, fileName, id);
 }
-
-#endif	/* COMPRESSOR_H */

@@ -8,3 +8,5 @@ nbproject
 *.a
 *.orig
 *.*~
+moc_*
+ui_*

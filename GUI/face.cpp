@@ -31,38 +31,112 @@
 #include <QProgressDialog>
 #include <QDockWidget>
 
-Face::Face() : sourceFileNames() {
-  widget = new Ui::face;
-  widget->setupUi(this);
+struct Face::Private {
+  CompressSettingsPanel *compressSettingsPanel;
+  DecompressSettingsPanel *decompressSettingsPanel;
 
-  filelist = new FileList;
-  setCentralWidget(filelist);
+  StatInfoW *statInfoW;
 
-  compressSettingsPanel = new CompressSettingsPanel;
-  compressSettingsDock = new QDockWidget(tr("Compress Settings"), this);
-  compressSettingsDock->setAllowedAreas(Qt::LeftDockWidgetArea);
-  compressSettingsDock->setWidget(compressSettingsPanel);
-  addDockWidget(Qt::LeftDockWidgetArea, compressSettingsDock);
+  CompressorThread *compressThread;
+  CompressorThread *decompressThread;
+  CompressorThread *listArchiveThread;
 
-  compressSettingsDock->hide();
+  Ui::face *widget;
+  Compressor *compressor;
 
-  decompressSettingsPanel = new DecompressSettingsPanel;
-  decompressSettingsDock = new QDockWidget(tr("Decompress Settings"), this);
-  decompressSettingsDock->setAllowedAreas(Qt::LeftDockWidgetArea);
-  decompressSettingsDock->setWidget(decompressSettingsPanel);
-  addDockWidget(Qt::LeftDockWidgetArea, decompressSettingsDock);
+  QToolBar *actionToolBar;
 
-  decompressSettingsDock->hide();
+  FileList *filelist;
 
-  statInfoW = new StatInfoW(this);
+  QStringList sourceFileNames;
+  QStringList encodedfileNames;
 
-  compressThread = new CompressorThread;
-  decompressThread = new CompressorThread;
-  listArchiveThread = new CompressorThread;
+  QString destFileName;
+  QString destDirName;
 
-  compressingProgressDialog = new QProgressDialog("Compressing files...", "Abort", 0, 100, this);
-  decompressingProgressDialog = new QProgressDialog("Decompressing files...", "Abort", 0, 100, this);
-  listArchiveContentsProgressDialog = new QProgressDialog("Reading archive contents...", "Abort", 0, 100, this);
+  QDir compressBaseDir;
+  QDir decompressBaseDir;
+
+  QDockWidget *compressSettingsDock;
+  QDockWidget *decompressSettingsDock;
+
+  QAction *selectFilesToCompressAction;
+  QAction *selectFileToDecompressAction;
+  QAction *compressAction;
+  QAction *decompressAction;
+  QAction *exitAction;
+  QAction *aboutAction;
+  QAction *aboutQtAction;
+
+  QMenu *fileMenu;
+  QMenu *helpMenu;
+
+  QProgressDialog *compressingProgressDialog;
+  QProgressDialog *decompressingProgressDialog;
+  QProgressDialog *listArchiveContentsProgressDialog;
+
+  bool brokenFileWarningShown;
+
+  QList< Compressor::CoderTypes> compressSequence;
+  unsigned int blockSize;
+  bool keepBrokenFiles;
+
+
+  Private(QMainWindow* parent) :
+    compressSettingsPanel(new CompressSettingsPanel()),
+    decompressSettingsPanel(new DecompressSettingsPanel()),
+    statInfoW(new StatInfoW(parent)),
+    m_parent(parent),
+    compressThread(new CompressorThread()),
+    decompressThread(new CompressorThread()),
+    listArchiveThread(new CompressorThread()),
+    widget(new Ui::face()),
+    filelist(new FileList())
+    {
+      compressSettingsDock = new QDockWidget(tr("Compress Settings"), m_parent);
+      decompressSettingsDock = new QDockWidget(tr("Decompress Settings"), m_parent);
+
+      compressingProgressDialog = new QProgressDialog("Compressing files...",
+        "Abort", 0, 100, m_parent);
+      decompressingProgressDialog = new QProgressDialog("Decompressing files...",
+        "Abort", 0, 100, m_parent);
+      listArchiveContentsProgressDialog = new QProgressDialog("Reading archive contents...",
+        "Abort", 0, 100, m_parent);
+    
+      widget->setupUi(m_parent);
+
+      selectFilesToCompressAction = new QAction(tr("Select files to compress"),
+          m_parent);
+      selectFileToDecompressAction = new QAction(tr("Select file to decompress"),
+          m_parent);
+
+      compressAction = new QAction(tr("Compress"), m_parent);
+      decompressAction = new QAction(tr("Decompress"), m_parent);
+      exitAction = new QAction(tr("E&xit"), m_parent);
+      aboutQtAction = new QAction(QIcon(":/images/qt.png"), tr("About &Qt"),
+          m_parent);
+      aboutAction = new QAction(QIcon(":/images/qt.png"), tr("About"), m_parent);
+  }
+
+private:
+  QMainWindow* m_parent;
+};
+
+Face::Face() : d(new Private(this)) {
+  setCentralWidget(d->filelist);
+
+  
+  d->compressSettingsDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+  d->compressSettingsDock->setWidget(d->compressSettingsPanel);
+  addDockWidget(Qt::LeftDockWidgetArea, d->compressSettingsDock);
+
+  d->compressSettingsDock->hide();
+
+  d->decompressSettingsDock->setAllowedAreas(Qt::LeftDockWidgetArea);
+  d->decompressSettingsDock->setWidget(d->decompressSettingsPanel);
+  addDockWidget(Qt::LeftDockWidgetArea, d->decompressSettingsDock);
+
+  d->decompressSettingsDock->hide();
 
   qRegisterMetaType< CTCompressorStatus::ErrorCode > ("CTCompressorStatus::ErrorCode");
   qRegisterMetaType< Compressor::Stat > ("Compressor::Stat");
@@ -75,10 +149,6 @@ Face::Face() : sourceFileNames() {
 }
 
 Face::~Face() {
-  delete compressingProgressDialog;
-  delete decompressingProgressDialog;
-  delete statInfoW;
-  delete widget;
 }
 
 void
@@ -93,64 +163,53 @@ Face::about() {
 
 void
 Face::activateCompressMode() {
-  decompressAction->setEnabled(false);
-  compressAction->setEnabled(true);
-  compressSettingsDock->show();
-  decompressSettingsDock->hide();
+  d->decompressAction->setEnabled(false);
+  d->compressAction->setEnabled(true);
+  d->compressSettingsDock->show();
+  d->decompressSettingsDock->hide();
 }
 
 void
 Face::activateDecompressMode() {
-  compressAction->setEnabled(false);
-  decompressAction->setEnabled(true);
-  decompressSettingsDock->show();
-  compressSettingsDock->hide();
+  d->compressAction->setEnabled(false);
+  d->decompressAction->setEnabled(true);
+  d->decompressSettingsDock->show();
+  d->compressSettingsDock->hide();
 }
 
 void
 Face::createActions() {
-  selectFilesToCompressAction = new QAction(tr("Select files to compress"), this);
-  connect(selectFilesToCompressAction, SIGNAL(triggered()), this, SLOT(selectFilesToCompress()));
+  connect(d->selectFilesToCompressAction, SIGNAL(triggered()), this, SLOT(selectFilesToCompress()));
+  connect(d->selectFileToDecompressAction, SIGNAL(triggered()), this, SLOT(selectFileToDecompress()));
 
-  selectFileToDecompressAction = new QAction(tr("Select file to decompress"), this);
-  connect(selectFileToDecompressAction, SIGNAL(triggered()), this, SLOT(selectFileToDecompress()));
+  d->compressAction->setEnabled(false);
+  d->decompressAction->setEnabled(false);
 
-  compressAction = new QAction(tr("Compress"), this);
-  compressAction->setEnabled(false);
-  connect(compressAction, SIGNAL(triggered()), this, SLOT(compress()));
-
-  decompressAction = new QAction(tr("Decompress"), this);
-  decompressAction->setEnabled(false);
-  connect(decompressAction, SIGNAL(triggered()), this, SLOT(decompress()));
-
-  exitAction = new QAction(tr("E&xit"), this);
-  connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-  aboutQtAction = new QAction(QIcon(":/images/qt.png"), tr("About &Qt"), this);
-  connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-  aboutAction = new QAction(QIcon(":/images/qt.png"), tr("About"), this);
-  connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+  connect(d->compressAction, SIGNAL(triggered()), this, SLOT(compress()));
+  connect(d->decompressAction, SIGNAL(triggered()), this, SLOT(decompress()));
+  connect(d->exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+  connect(d->aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+  connect(d->aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 }
 
 void
 Face::createToolBars() {
-  actionToolBar = addToolBar(tr("Action"));
-  actionToolBar->addAction(compressAction);
-  actionToolBar->addAction(decompressAction);
+  d->actionToolBar = addToolBar(tr("Action"));
+  d->actionToolBar->addAction(d->compressAction);
+  d->actionToolBar->addAction(d->decompressAction);
 }
 
 void
 Face::createMenus() {
-  fileMenu = menuBar()->addMenu(tr("File"));
-  fileMenu->addAction(selectFilesToCompressAction);
-  fileMenu->addAction(selectFileToDecompressAction);
-  fileMenu->addSeparator();
-  fileMenu->addAction(exitAction);
+  d->fileMenu = menuBar()->addMenu(tr("File"));
+  d->fileMenu->addAction(d->selectFilesToCompressAction);
+  d->fileMenu->addAction(d->selectFileToDecompressAction);
+  d->fileMenu->addSeparator();
+  d->fileMenu->addAction(d->exitAction);
 
-  helpMenu = menuBar()->addMenu(tr("Help"));
-  helpMenu->addAction(aboutAction);
-  helpMenu->addAction(aboutQtAction);
+  d->helpMenu = menuBar()->addMenu(tr("Help"));
+  d->helpMenu->addAction(d->aboutAction);
+  d->helpMenu->addAction(d->aboutQtAction);
 }
 
 void
@@ -159,16 +218,17 @@ Face::compress() {
   destFileDialog.setWindowTitle("Select Output File");
 
   if (destFileDialog.exec())
-    destFileName = destFileDialog.selectedFiles()[0];
+    d->destFileName = destFileDialog.selectedFiles()[0];
   else return;
 
-  compressingProgressDialog->setWindowModality(Qt::WindowModal);
-  compressingProgressDialog->setAutoClose(false);
-  compressingProgressDialog->reset();
+  d->compressingProgressDialog->setWindowModality(Qt::WindowModal);
+  d->compressingProgressDialog->setAutoClose(false);
+  d->compressingProgressDialog->reset();
 
-  compressThread->initCompress(sourceFileNames, destFileName, blockSize, compressBaseDir, compressSequence);
-  compressingProgressDialog->show();
-  compressThread->start();
+  d->compressThread->initCompress(d->sourceFileNames, d->destFileName,
+      d->blockSize, d->compressBaseDir, d->compressSequence);
+  d->compressingProgressDialog->show();
+  d->compressThread->start();
 }
 
 void
@@ -178,46 +238,52 @@ Face::decompress() {
   destDirDialog.setWindowTitle("Select Output Folder");
 
   if (destDirDialog.exec())
-    destDirName = destDirDialog.selectedFiles()[0];
+    d->destDirName = destDirDialog.selectedFiles()[0];
   else return;
 
-  while (!QDir::setCurrent(destDirName)) {
-    QMessageBox::critical(this, "Error!", "Cannot change folder to " + destDirName + "\nPlease select other folder!");
+  while (!QDir::setCurrent(d->destDirName)) {
+    QMessageBox::critical(this, "Error!", "Cannot change folder to "
+      + d->destDirName + "\nPlease select other folder!");
+
     if (destDirDialog.exec())
-      destDirName = destDirDialog.selectedFiles()[0];
+        d->destDirName = destDirDialog.selectedFiles()[0];
     else return;
   }
-  decompressingProgressDialog->setWindowModality(Qt::WindowModal);
-  decompressingProgressDialog->setAutoClose(false);
-  decompressingProgressDialog->reset();
 
-  decompressThread->initDecompress(encodedfileNames[0], keepBrokenFiles);
-  decompressingProgressDialog->show();
-  decompressThread->start();
+  d->decompressingProgressDialog->setWindowModality(Qt::WindowModal);
+  d->decompressingProgressDialog->setAutoClose(false);
+  d->decompressingProgressDialog->reset();
+
+  d->decompressThread->initDecompress(d->encodedfileNames[0], d->keepBrokenFiles);
+  d->decompressingProgressDialog->show();
+  d->decompressThread->start();
 }
 
 void
 Face::displayCompressStatus(int progress, QString fileName, float speed) {
-  compressingProgressDialog->setValue(progress);
-  compressingProgressDialog->setLabelText("Current file: " + fileName + "\n" + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
+  d->compressingProgressDialog->setValue(progress);
+  d->compressingProgressDialog->setLabelText("Current file: " + fileName + "\n"
+      + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
 }
 
 void
 Face::displayDecompressStatus(int progress, QString fileName, float speed) {
-  decompressingProgressDialog->setValue(progress);
-  decompressingProgressDialog->setLabelText("Current file: " + fileName + "\n" + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
+  d->decompressingProgressDialog->setValue(progress);
+  d->decompressingProgressDialog->setLabelText("Current file: " + fileName + "\n"
+    + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
 }
 
 void
 Face::displayListStatus(int progress, QString fileName, float speed) {
-  listArchiveContentsProgressDialog->setValue(progress);
-  listArchiveContentsProgressDialog->setLabelText("Current file: " + fileName + "\n" + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
+  d->listArchiveContentsProgressDialog->setValue(progress);
+  d->listArchiveContentsProgressDialog->setLabelText("Current file: " + fileName + "\n"
+    + "Speed: " + DataUnitsToQString::convertDataSpeed(speed, 2));
 }
 
 void
 Face::initSettings() {
-  compressSequence.clear();
-  compressSequence << Compressor::RLE <<
+  d->compressSequence.clear();
+  d->compressSequence << Compressor::RLE <<
       Compressor::BWT <<
       Compressor::MTF <<
       Compressor::RLE <<
@@ -225,21 +291,21 @@ Face::initSettings() {
       Compressor::NONE <<
       Compressor::NONE <<
       Compressor::NONE;
-  blockSize = 900000;
-  compressSettingsPanel->set(blockSize / 1000, compressSequence);
-  keepBrokenFiles = true;
-  decompressSettingsPanel->set(keepBrokenFiles);
+  d->blockSize = 900000;
+  d->compressSettingsPanel->set(d->blockSize / 1000, d->compressSequence);
+  d->keepBrokenFiles = true;
+  d->decompressSettingsPanel->set(d->keepBrokenFiles);
 }
 
 void
 Face::listArchiveContents() {
-  brokenFileWarningShown = false;
-  listArchiveContentsProgressDialog->setWindowModality(Qt::WindowModal);
-  listArchiveContentsProgressDialog->setAutoClose(false);
+  d->brokenFileWarningShown = false;
+  d->listArchiveContentsProgressDialog->setWindowModality(Qt::WindowModal);
+  d->listArchiveContentsProgressDialog->setAutoClose(false);
 
-  listArchiveThread->initList(encodedfileNames[0]);
-  listArchiveContentsProgressDialog->show();
-  listArchiveThread->start();
+  d->listArchiveThread->initList(d->encodedfileNames[0]);
+  d->listArchiveContentsProgressDialog->show();
+  d->listArchiveThread->start();
 }
 
 void
@@ -249,20 +315,21 @@ Face::selectFilesToCompress() {
   openFileToCompressDialog.setWindowTitle("Select Files To Compress");
 
   if (openFileToCompressDialog.exec()) {
-    sourceFileNames = openFileToCompressDialog.selectedFiles();
-    compressBaseDir = openFileToCompressDialog.directory();
+    d->sourceFileNames = openFileToCompressDialog.selectedFiles();
+    d->compressBaseDir = openFileToCompressDialog.directory();
   } else return;
 
-  while (!QDir::setCurrent(compressBaseDir.absolutePath() + "/")) {
+  while (!QDir::setCurrent(d->compressBaseDir.absolutePath() + "/")) {
     QMessageBox::critical(this, "Error!",
-        "Folder " + compressBaseDir.path() + " is not accessible\nPlease select other files!");
+      "Folder " + d->compressBaseDir.path()
+      + " is not accessible\nPlease select other files!");
     if (openFileToCompressDialog.exec()) {
-      sourceFileNames = openFileToCompressDialog.selectedFiles();
-      compressBaseDir = openFileToCompressDialog.directory();
+      d->sourceFileNames = openFileToCompressDialog.selectedFiles();
+      d->compressBaseDir = openFileToCompressDialog.directory();
     } else return;
   }
 
-  filelist->setFileList(sourceFileNames, compressBaseDir);
+  d->filelist->setFileList(d->sourceFileNames, d->compressBaseDir);
   activateCompressMode();
 }
 
@@ -271,8 +338,8 @@ Face::selectFileToDecompress() {
   QFileDialog openFileToDecompressDialog;
   openFileToDecompressDialog.setWindowTitle(tr("Select File To Decompress"));
   if (openFileToDecompressDialog.exec()) {
-    encodedfileNames = openFileToDecompressDialog.selectedFiles();
-    decompressBaseDir = openFileToDecompressDialog.directory();
+    d->encodedfileNames = openFileToDecompressDialog.selectedFiles();
+    d->decompressBaseDir = openFileToDecompressDialog.directory();
     listArchiveContents();
     activateDecompressMode();
   }
@@ -280,68 +347,68 @@ Face::selectFileToDecompress() {
 
 void
 Face::setCompressSettings(unsigned int blockSize, QList< Compressor::CoderTypes> compressSequence) {
-  this->compressSequence = compressSequence;
-  this->blockSize = 1000 * blockSize;
+  d->compressSequence = compressSequence;
+  d->blockSize = 1000 * blockSize;
 }
 
 void
 Face::setDecompressSettings(bool keepBrokenFiles) {
-  this->keepBrokenFiles = keepBrokenFiles;
+  d->keepBrokenFiles = keepBrokenFiles;
 }
 
 void
 Face::setupWidgetsConnections() {
-  connect(compressSettingsPanel, SIGNAL(settingsChanged(unsigned int, QList< Compressor::CoderTypes>)), this, SLOT(setCompressSettings(unsigned int, QList< Compressor::CoderTypes>)));
-  connect(compressSettingsPanel, SIGNAL(resetToDefaults()), this, SLOT(initSettings()));
+  connect(d->compressSettingsPanel, SIGNAL(settingsChanged(unsigned int, QList< Compressor::CoderTypes>)), this, SLOT(setCompressSettings(unsigned int, QList< Compressor::CoderTypes>)));
+  connect(d->compressSettingsPanel, SIGNAL(resetToDefaults()), this, SLOT(initSettings()));
 
-  connect(decompressSettingsPanel, SIGNAL(settingsChanged(bool)), this, SLOT(setDecompressSettings(bool)));
-  connect(decompressSettingsPanel, SIGNAL(resetToDefaults()), this, SLOT(initSettings()));
+  connect(d->decompressSettingsPanel, SIGNAL(settingsChanged(bool)), this, SLOT(setDecompressSettings(bool)));
+  connect(d->decompressSettingsPanel, SIGNAL(resetToDefaults()), this, SLOT(initSettings()));
 
-  connect(compressThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayCompressStatus(int, QString, float)));
-  connect(compressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
-  connect(compressingProgressDialog, SIGNAL(canceled()), compressThread, SLOT(stop()));
-  connect(compressThread, SIGNAL(finished()), compressingProgressDialog, SLOT(reject()));
-  connect(compressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
-  connect(compressThread, SIGNAL(statInfo(Compressor::Stat)), this, SLOT(showCompressStatInfo(Compressor::Stat)));
+  connect(d->compressThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayCompressStatus(int, QString, float)));
+  connect(d->compressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
+  connect(d->compressingProgressDialog, SIGNAL(canceled()), d->compressThread, SLOT(stop()));
+  connect(d->compressThread, SIGNAL(finished()), d->compressingProgressDialog, SLOT(reject()));
+  connect(d->compressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), d->filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
+  connect(d->compressThread, SIGNAL(statInfo(Compressor::Stat)), this, SLOT(showCompressStatInfo(Compressor::Stat)));
 
-  connect(decompressThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayDecompressStatus(int, QString, float)));
-  connect(decompressingProgressDialog, SIGNAL(canceled()), decompressThread, SLOT(stop()));
-  connect(decompressThread, SIGNAL(finished()), decompressingProgressDialog, SLOT(reject()));
-  connect(decompressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
-  connect(decompressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
-  connect(decompressThread, SIGNAL(statInfo(Compressor::Stat)), this, SLOT(showDecompressStatInfo(Compressor::Stat)));
+  connect(d->decompressThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayDecompressStatus(int, QString, float)));
+  connect(d->decompressingProgressDialog, SIGNAL(canceled()), d->decompressThread, SLOT(stop()));
+  connect(d->decompressThread, SIGNAL(finished()), d->decompressingProgressDialog, SLOT(reject()));
+  connect(d->decompressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), d->filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
+  connect(d->decompressThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
+  connect(d->decompressThread, SIGNAL(statInfo(Compressor::Stat)), this, SLOT(showDecompressStatInfo(Compressor::Stat)));
 
-  connect(listArchiveThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayListStatus(int, QString, float)));
-  connect(listArchiveContentsProgressDialog, SIGNAL(canceled()), listArchiveThread, SLOT(stop()));
-  connect(listArchiveThread, SIGNAL(finished()), listArchiveContentsProgressDialog, SLOT(reject()));
-  connect(listArchiveThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
-  connect(listArchiveThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
-  connect(listArchiveThread, SIGNAL(started()), filelist, SLOT(init()));
+  connect(d->listArchiveThread, SIGNAL(progressChanged(int, QString, float)), this, SLOT(displayListStatus(int, QString, float)));
+  connect(d->listArchiveContentsProgressDialog, SIGNAL(canceled()), d->listArchiveThread, SLOT(stop()));
+  connect(d->listArchiveThread, SIGNAL(finished()), d->listArchiveContentsProgressDialog, SLOT(reject()));
+  connect(d->listArchiveThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), this, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString)));
+  connect(d->listArchiveThread, SIGNAL(info(CTCompressorStatus::ErrorCode, QString, unsigned int)), d->filelist, SLOT(showInfo(CTCompressorStatus::ErrorCode, QString, unsigned int)));
+  connect(d->listArchiveThread, SIGNAL(started()), d->filelist, SLOT(init()));
 }
 
 void
 Face::showCompressStatInfo(Compressor::Stat stat) {
-  if (!compressingProgressDialog->wasCanceled()) {
+    if (!d->compressingProgressDialog->wasCanceled()) {
     StatInfoW::StatInfo statInfo;
     statInfo.speed = stat.speed;
-    statInfo.blockSize = blockSize;
-    statInfo.compressSequence = compressSequence;
+    statInfo.blockSize = d->blockSize;
+    statInfo.compressSequence = d->compressSequence;
     statInfo.inputSize = stat.decodedSize;
     statInfo.outputSize = stat.encodedSize;
 
-    statInfoW->showInfo(statInfo);
-    statInfoW->setWindowTitle("Compressing Statistics");
+    d->statInfoW->showInfo(statInfo);
+    d->statInfoW->setWindowTitle("Compressing Statistics");
 
-    statInfoW->show();
+    d->statInfoW->show();
   }
 }
 
 void
 Face::showDecompressStatInfo(Compressor::Stat stat) {
-  if (!decompressingProgressDialog->wasCanceled()) {
+    if (!d->decompressingProgressDialog->wasCanceled()) {
     StatInfoW::StatInfo statInfo;
     statInfo.speed = stat.speed;
-    statInfo.blockSize = blockSize;
+    statInfo.blockSize = d->blockSize;
 
     QList< Compressor::CoderTypes> emptySeq;
 
@@ -349,10 +416,10 @@ Face::showDecompressStatInfo(Compressor::Stat stat) {
     statInfo.inputSize = stat.encodedSize;
     statInfo.outputSize = stat.decodedSize;
 
-    statInfoW->showInfo(statInfo);
-    statInfoW->setWindowTitle("Decompressing Statistics");
+    d->statInfoW->showInfo(statInfo);
+    d->statInfoW->setWindowTitle("Decompressing Statistics");
 
-    statInfoW->show();
+    d->statInfoW->show();
   }
 }
 
@@ -367,8 +434,8 @@ Face::showInfo(CTCompressorStatus::ErrorCode error, QString fileName) {
     break;
   case CTCompressorStatus::INPUT_FILE_CORRUPTED:
   {
-    if (!brokenFileWarningShown) {
-      brokenFileWarningShown = true;
+    if (!d->brokenFileWarningShown) {
+        d->brokenFileWarningShown = true;
       QMessageBox::warning(this, "Error!", "Input File Corrupted!");
     }
   }

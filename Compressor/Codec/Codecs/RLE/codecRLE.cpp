@@ -19,6 +19,8 @@
 
 #include <climits>
 
+#include <cstdio>
+
 Codec_RLE::Codec_RLE() { }
 
 Codec_RLE::~Codec_RLE() { }

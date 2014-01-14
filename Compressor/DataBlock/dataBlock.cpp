@@ -37,7 +37,7 @@ dataSize(0), nBytesToRead(setBlockSize), header(new DataBlockHeader()),
 outBlock(new dataT(setBlockSize * 2)),
 recoveryMode(false) { }
 
-DataBlock::DataBlock() : data(new vector < unsigned char >), dataSize(0), nBytesToRead(0),
+DataBlock::DataBlock() : data(new dataT), dataSize(0), nBytesToRead(0),
 header(new DataBlockHeader()), outBlock(NULL), recoveryMode(false) {
   data->reserve(MIN_RAW_BLOCK_SIZE);
 }

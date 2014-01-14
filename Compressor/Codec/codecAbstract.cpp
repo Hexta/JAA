@@ -16,8 +16,9 @@
  ******************************************************************************/
 
 #include "codecAbstract.h"
-#include "../DataBlock/dataBlock.h"
-#include "../DataBlock/dataBlockHeader.h"
+
+#include "Compressor/DataBlock/dataBlock.h"
+#include "Compressor/DataBlock/dataBlockHeader.h"
 
 Codec_abstract::Codec_abstract() : data(0), decodedDataSize(0),
     encodedDataSize(0), codecParams(0) { }

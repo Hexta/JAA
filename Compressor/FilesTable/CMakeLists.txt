@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 find_package(Boost REQUIRED
 )                  
 
-set(${project}_filestable_SRC
+set(${PROJECT_NAME}_filestable_SRC
     fileBlocksInfo.cpp
     filesTable.cpp
 )
@@ -14,9 +14,9 @@ include_directories(
 )
 
 
-add_library(${project}_filestable STATIC
-    ${${project}_filestable_SRC}
+add_library(${PROJECT_NAME}_filestable STATIC
+    ${${PROJECT_NAME}_filestable_SRC}
 )
 
-target_link_libraries(${project}_filestable
+target_link_libraries(${PROJECT_NAME}_filestable
 )

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(${project}_codec_mtf_SRC
+set(${PROJECT_NAME}_codec_mtf_SRC
     codecMTF.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_library(${project}_codec_mtf STATIC
-    ${${project}_codec_mtf_SRC}
+add_library(${PROJECT_NAME}_codec_mtf STATIC
+    ${${PROJECT_NAME}_codec_mtf_SRC}
 )
 
-target_link_libraries(${project}_codec_mtf
+target_link_libraries(${PROJECT_NAME}_codec_mtf
 )

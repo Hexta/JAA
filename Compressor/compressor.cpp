@@ -34,9 +34,9 @@ void
 CompressorStatus::showInfo(ErrorCode, const QString&, unsigned int) { }
 
 Compressor::Compressor(CompressorStatus *status)
-: codec(), block(NULL), status(status), currReadBytesCount(0),
-decodedDataSize(0), encodedDataSize(0), totalProcessingTime(0),
-source_data_size(0), blocksTable(), defaultCompressSequence() {
+    : codec(), block(NULL), status(status), currReadBytesCount(0),
+    decodedDataSize(0), encodedDataSize(0), totalProcessingTime(0),
+    sourceDataSize(0), blocksTable(), defaultCompressSequence() {
 
     defaultCompressSequence.push_back(RLE);
     defaultCompressSequence.push_back(BWT);
@@ -126,8 +126,8 @@ Compressor::compress(
             //compress current file
             if (!block->readRAW(fin)) break;
 
-            source_data_size = header->getDecodedDataSize();
-            currReadBytesCount += source_data_size;
+            sourceDataSize = header->getDecodedDataSize();
+            currReadBytesCount += sourceDataSize;
 
             header->setFileName(iFileNames[*i].toUtf8().constData());
             header->setPart(part++);
@@ -142,13 +142,13 @@ Compressor::compress(
 
             header->setFileName(iFileNames[*i].toUtf8().constData());
             encodedDataSize += header->getEncodedDataSize();
-            header->setRAWDataSize(source_data_size);
+            header->setRAWDataSize(sourceDataSize);
             header->setPart(part - 1);
             header->setPartsCount(partsCount);
             block->write(fout);
 
             showEncodingProgress(iFileNames[*i],
-                                 speed(source_data_size, stoptTime - startTime));
+                                 speed(sourceDataSize, stoptTime - startTime));
         }
 
         fin.close();

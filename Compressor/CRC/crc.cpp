@@ -1,6 +1,5 @@
 #include "crc.h"
-#include <stddef.h>
-#include <stdint.h>
+
 /*
   Name  : CRC-32
   Poly  : 0x04C11DB7    x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11

@@ -15,20 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_H
-#define	CODEC_H
+#pragma once
 
-#include "Codecs/BWT/codecBWT.h"
-#include "Codecs/MTF/codecMTF.h"
-#include "Codecs/RLE/codecRLE.h"
-#include "Codecs/HUFF/codecHUFF.h"
+#include "Compressor/Codec/Codecs/BWT/codecBWT.h"
+#include "Compressor/Codec/Codecs/MTF/codecMTF.h"
+#include "Compressor/Codec/Codecs/RLE/codecRLE.h"
+#include "Compressor/Codec/Codecs/HUFF/codecHUFF.h"
 
-class Codec : public virtual Codec_BWT, public virtual Codec_HUFF, public virtual Codec_MTF, public virtual Codec_RLE {
+class Codec : public virtual Codec_BWT, public virtual Codec_HUFF,
+    public virtual Codec_MTF, public virtual Codec_RLE {
+
 public:
   Codec();
   virtual ~Codec();
+
 private:
-
 };
-
-#endif	/* CODEC_H */

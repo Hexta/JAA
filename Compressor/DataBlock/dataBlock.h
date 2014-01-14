@@ -15,21 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef DATABLOCK_H
-#define	DATABLOCK_H
+#pragma once
 
-#include "../private/consts.h"
-#include "../CRC/crc.h"
+#include "Compressor/private/consts.h"
 
-#include <iostream>
-#include <sstream>
-#include <cstring>
 #include <vector>
-#include <stdint.h>
 
-using namespace std;
-
-typedef vector < unsigned char > dataT;
+typedef std::vector<unsigned char> dataT;
 
 class QFile;
 class DataBlockHeader;
@@ -72,7 +64,4 @@ private:
   bool recoveryMode;
 
   uint32_t calcCRC();
-
 };
-
-#endif	/* DATABLOCK_H */

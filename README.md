@@ -17,12 +17,13 @@ Allow use its in any combinations.
 ===
 
 Supported platforms:
-  * Windows XP-7(Tested)
-   - MinGW x86, amd64
+  * Windows XP-7
+   - MinGW
    - MSVC 2013
-  * GNU/Linux (GCC 4.7+, Qt 5.0) x86, amd64
-
-
+   - Clang
+  * GNU/Linux
+   - GCC 4.7+
+   - Clang
 
 Installation
 

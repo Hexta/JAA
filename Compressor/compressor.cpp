@@ -410,7 +410,8 @@ Compressor::listArchiveContents(const QString &iFileName,
                 break;
         }
 
-        currReadBytesCount += header->getEncodedDataSize() + HEADER_SIZE;
+        currReadBytesCount += header->getEncodedDataSize() +
+          JAA_header_constants::HEADER_SIZE;
 
         clock_t stoptTime = clock();
         totalProcessingTime += stoptTime - startTime;

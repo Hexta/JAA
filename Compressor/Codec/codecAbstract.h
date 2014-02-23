@@ -15,17 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_ABSTRACT_H
-#define	CODEC_ABSTRACT_H
+#pragma once
 
-#include "../DataBlock/dataBlock.h"
+#include "Compressor/DataBlock/dataBlock.h"
 
-#include <stdint.h>
-
-using namespace std;
+#include <cstdint>
 
 class DataBlockHeader;
-class DataBlock;
 
 class Codec_abstract {
 public:
@@ -47,5 +43,3 @@ private:
   Codec_abstract(const Codec_abstract&);
   void operator=(const Codec_abstract&);
 };
-
-#endif	/* CODEC_ABSTRACT_H */

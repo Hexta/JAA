@@ -8,15 +8,17 @@ set(${PROJECT_NAME}_filestable_SRC
     filesTable.cpp
 )
 
+set(${PROJECT_NAME}_filestable_H
+    fileBlocksInfo.h
+    filesTable.h
+)
+
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${Boost_INCLUDE_DIRS}
 )
 
-
-add_library(${PROJECT_NAME}_filestable STATIC
+add_library(${PROJECT_NAME}_Filestable STATIC
     ${${PROJECT_NAME}_filestable_SRC}
-)
-
-target_link_libraries(${PROJECT_NAME}_filestable
+    ${${PROJECT_NAME}_filestable_H}
 )

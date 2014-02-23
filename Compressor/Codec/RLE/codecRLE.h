@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_RLE_H
-#define	CODEC_RLE_H
+#pragma once
 
-#include "../../../DataBlock/dataBlock.h"
-#include "../../codecAbstract.h"
+#include "Compressor/Codec/codecAbstract.h"
+
+class DataBlock;
 
 class Codec_RLE : public virtual Codec_abstract {
 public:
@@ -31,6 +31,3 @@ public:
 
 private:
 };
-
-#endif	/* CODEC_RLE_H */
-

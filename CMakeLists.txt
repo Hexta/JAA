@@ -36,9 +36,9 @@ qt5_use_modules(${PROJECT_NAME} Widgets Gui Core)
 
 target_link_libraries(${PROJECT_NAME}
     ${QT_LIBRARIES}
-    ${PROJECT_NAME}_face
+    ${PROJECT_NAME}_Face
     ${PROJECT_NAME}_compressor
-    ${PROJECT_NAME}_codec
+    ${PROJECT_NAME}_Codec
 )
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_face)

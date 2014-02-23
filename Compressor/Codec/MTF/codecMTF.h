@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_MTF_H
-#define	CODEC_MTF_H
+#pragma once
 
-#include "../../../DataBlock/dataBlock.h"
-#include "../../codecAbstract.h"
+#include "Compressor/Codec/codecAbstract.h"
+
+class DataBlock;
 
 class Codec_MTF : public virtual Codec_abstract {
 public:
@@ -39,7 +39,7 @@ private:
     struct mtf_list *next;
   } mtf_list_t;
 
-  vector <mtf_list_t> table;
+  std::vector <mtf_list_t> table;
   mtf_list_t *p, *head, *tail;
 
   void init_mtf(int tsize);
@@ -96,5 +96,3 @@ Codec_MTF::get_mtf_c(int i) {
   }
   return p->c;
 }
-
-#endif	/* CODEC_MTF_H */

@@ -15,24 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef DATABLOCKHEADER_H
-#define	DATABLOCKHEADER_H
+#pragma once
 
-#include "../CRC/crc.h"
-#include "../private/consts.h"
+#include "Compressor/CRC/crc.h"
+#include "Compressor/private/consts.h"
 
 #include <stdint.h>
-#include <cstring>
+#include <memory>
 
-#define HEADER_SIZE (448)
-#define HEADER_DATA_SIZE (436)//After Header-CRC data size
-#define MAX_FILENAME_LENGTH (400)
+namespace JAA_header_constants {
+int const HEADER_SIZE(448);
 
-#ifdef _MSC_VER
-#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
-#elif defined(__GNUC__)
-#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#endif
+//After Header-CRC data size
+int const HEADER_DATA_SIZE(436);
+
+int const MAX_FILENAME_LENGTH(400);
+}
 
 class DataBlockHeader {
 public:
@@ -91,24 +89,9 @@ public:
   initRAW(uint64_t offset, const uint32_t rawDataSize);
 
 private:
-    PACK(
-        struct HeaderDataType {
-            uint64_t id;
-            uint32_t headerCRC;
-            uint64_t offset;
-            uint32_t rawDataSize;
-            uint32_t decodedDataSize;
-            uint32_t encodedDataSize;
-            uint32_t encodedDataCRC;
-            uint32_t codecParams;
-            char fileName[MAX_FILENAME_LENGTH];
-            uint32_t part;
-            uint32_t partsCount;
-        }) headerData;
-
   DataBlockHeader(const DataBlockHeader&);
 
+private:
+  struct Private;
+  std::unique_ptr<Private> d;
 };
-
-#endif	/* DATABLOCKHEADER_H */
-

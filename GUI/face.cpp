@@ -32,6 +32,42 @@
 #include <QDockWidget>
 
 struct Face::Private {
+  Private(QMainWindow* parent) :
+  compressSettingsPanel(new CompressSettingsPanel()),
+  decompressSettingsPanel(new DecompressSettingsPanel()),
+  statInfoW(new StatInfoW(parent)),
+  compressThread(new CompressorThread()),
+  decompressThread(new CompressorThread()),
+  listArchiveThread(new CompressorThread()),
+  widget(new Ui::face()),
+  filelist(new FileList()),
+  m_parent(parent)
+  {
+    compressSettingsDock = new QDockWidget(tr("Compress Settings"), m_parent);
+    decompressSettingsDock = new QDockWidget(tr("Decompress Settings"), m_parent);
+
+    compressingProgressDialog = new QProgressDialog("Compressing files...",
+      "Abort", 0, 100, m_parent);
+    decompressingProgressDialog = new QProgressDialog("Decompressing files...",
+      "Abort", 0, 100, m_parent);
+    listArchiveContentsProgressDialog = new QProgressDialog("Reading archive contents...",
+      "Abort", 0, 100, m_parent);
+
+    widget->setupUi(m_parent);
+
+    selectFilesToCompressAction = new QAction(tr("Select files to compress"),
+        m_parent);
+    selectFileToDecompressAction = new QAction(tr("Select file to decompress"),
+        m_parent);
+
+    compressAction = new QAction(tr("Compress"), m_parent);
+    decompressAction = new QAction(tr("Decompress"), m_parent);
+    exitAction = new QAction(tr("E&xit"), m_parent);
+    aboutQtAction = new QAction(QIcon(":/images/qt.png"), tr("About &Qt"),
+        m_parent);
+    aboutAction = new QAction(QIcon(":/images/qt.png"), tr("About"), m_parent);
+  }
+
   CompressSettingsPanel *compressSettingsPanel;
   DecompressSettingsPanel *decompressSettingsPanel;
 
@@ -81,43 +117,6 @@ struct Face::Private {
   unsigned int blockSize;
   bool keepBrokenFiles;
 
-
-  Private(QMainWindow* parent) :
-    compressSettingsPanel(new CompressSettingsPanel()),
-    decompressSettingsPanel(new DecompressSettingsPanel()),
-    statInfoW(new StatInfoW(parent)),
-    m_parent(parent),
-    compressThread(new CompressorThread()),
-    decompressThread(new CompressorThread()),
-    listArchiveThread(new CompressorThread()),
-    widget(new Ui::face()),
-    filelist(new FileList())
-    {
-      compressSettingsDock = new QDockWidget(tr("Compress Settings"), m_parent);
-      decompressSettingsDock = new QDockWidget(tr("Decompress Settings"), m_parent);
-
-      compressingProgressDialog = new QProgressDialog("Compressing files...",
-        "Abort", 0, 100, m_parent);
-      decompressingProgressDialog = new QProgressDialog("Decompressing files...",
-        "Abort", 0, 100, m_parent);
-      listArchiveContentsProgressDialog = new QProgressDialog("Reading archive contents...",
-        "Abort", 0, 100, m_parent);
-    
-      widget->setupUi(m_parent);
-
-      selectFilesToCompressAction = new QAction(tr("Select files to compress"),
-          m_parent);
-      selectFileToDecompressAction = new QAction(tr("Select file to decompress"),
-          m_parent);
-
-      compressAction = new QAction(tr("Compress"), m_parent);
-      decompressAction = new QAction(tr("Decompress"), m_parent);
-      exitAction = new QAction(tr("E&xit"), m_parent);
-      aboutQtAction = new QAction(QIcon(":/images/qt.png"), tr("About &Qt"),
-          m_parent);
-      aboutAction = new QAction(QIcon(":/images/qt.png"), tr("About"), m_parent);
-  }
-
 private:
   QMainWindow* m_parent;
 };
@@ -125,7 +124,6 @@ private:
 Face::Face() : d(new Private(this)) {
   setCentralWidget(d->filelist);
 
-  
   d->compressSettingsDock->setAllowedAreas(Qt::LeftDockWidgetArea);
   d->compressSettingsDock->setWidget(d->compressSettingsPanel);
   addDockWidget(Qt::LeftDockWidgetArea, d->compressSettingsDock);

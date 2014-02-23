@@ -15,24 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_BWT_H
-#define	CODEC_BWT_H
+#pragma once
 
+#include "Compressor/Codec/codecAbstract.h"
 
-#include "divsuf/divsufsort.h"
-#include "../../../DataBlock/dataBlock.h"
-#include "../../codecAbstract.h"
+class DataBlock;
 
-class Codec_BWT : public virtual Codec_abstract {
+class Codec_HUFF : public virtual Codec_abstract {
 public:
-  Codec_BWT();
-  ~Codec_BWT();
+  Codec_HUFF();
+  virtual ~Codec_HUFF();
 
-  void encode_BWT(DataBlock* inData);
-  void decode_BWT(DataBlock* inData);
+  void decode_HUFF(DataBlock* inData);
+  void encode_HUFF(DataBlock* inData);
 
 private:
-  vector <int32_t> SA;
 };
-
-#endif	/* CODEC_BWT_H */

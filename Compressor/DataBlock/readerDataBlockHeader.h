@@ -15,15 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef READERDATABLOCKHEADER_H
-#define	READERDATABLOCKHEADER_H
+#pragma once
 
-#include "../private/consts.h"
-
-#include <QFile>
+#include "Compressor/private/consts.h"
 
 #include <fstream>
 
+class QFile;
 class DataBlockHeader;
 
 class ReaderDataBlockHeader {
@@ -34,11 +32,9 @@ public:
 
   virtual ~ReaderDataBlockHeader();
 
-  JAA::FileIOResult read(DataBlockHeader * outHeader, QFile &in, bool searchHeader = false);
+  JAA::FileIOResult read(DataBlockHeader * outHeader,
+    QFile &in, bool searchHeader = false);
 
 private:
   bool find(DataBlockHeader *outHeader, QFile &fin);
 };
-
-#endif	/* READERDATABLOCKHEADER_H */
-

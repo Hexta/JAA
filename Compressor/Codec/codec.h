@@ -17,13 +17,15 @@
 
 #pragma once
 
-#include "Compressor/Codec/Codecs/BWT/codecBWT.h"
-#include "Compressor/Codec/Codecs/MTF/codecMTF.h"
-#include "Compressor/Codec/Codecs/RLE/codecRLE.h"
-#include "Compressor/Codec/Codecs/HUFF/codecHUFF.h"
+#include "BWT/codecBWT.h"
+#include "MTF/codecMTF.h"
+#include "RLE/codecRLE.h"
+#include "HUFF/codecHUFF.h"
 
-class Codec : public virtual Codec_BWT, public virtual Codec_HUFF,
-    public virtual Codec_MTF, public virtual Codec_RLE {
+class Codec : public virtual Codec_BWT,
+    public virtual Codec_HUFF,
+    public virtual Codec_MTF,
+    public virtual Codec_RLE {
 
 public:
   Codec();

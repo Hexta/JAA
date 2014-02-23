@@ -18,6 +18,8 @@
 #include "readerDataBlockHeader.h"
 #include  "dataBlockHeader.h"
 
+#include <QFile>
+
 #include <algorithm>
 
 #define BUFFER_SIZE (100000)
@@ -25,6 +27,8 @@
 ReaderDataBlockHeader::ReaderDataBlockHeader() { }
 
 ReaderDataBlockHeader::~ReaderDataBlockHeader() { }
+
+using JAA_header_constants::HEADER_SIZE;
 
 JAA::FileIOResult
 ReaderDataBlockHeader::read(DataBlockHeader * outHeader, QFile &in, bool recoverMode) {
@@ -34,7 +38,8 @@ ReaderDataBlockHeader::read(DataBlockHeader * outHeader, QFile &in, bool recover
     }
   } else {
     unsigned char in_header_data[HEADER_SIZE];
-    unsigned int receivedBytesCount = in.read(reinterpret_cast<char*>(in_header_data), HEADER_SIZE);
+    unsigned int receivedBytesCount = in.read(reinterpret_cast<char*>(in_header_data),
+      HEADER_SIZE);
 
     if (receivedBytesCount == 0)
       return JAA::FileIOResult::FILE_END;
@@ -57,7 +62,8 @@ ReaderDataBlockHeader::find(DataBlockHeader *outHeader, QFile &fin) {
 
   unsigned int nReadBytes;
 
-  while ((nReadBytes = fin.read(reinterpret_cast<char*>(buffer), BUFFER_SIZE)) > HEADER_SIZE) {
+  while ((nReadBytes = fin.read(reinterpret_cast<char*>(buffer), BUFFER_SIZE)) >
+      HEADER_SIZE) {
     unsigned char * findPos =
         std::search(buffer, buffer + nReadBytes + 1, JAA::ARCHIVER_ID,
                     JAA::ARCHIVER_ID + JAA::ARCHIVER_ID_SIZE);

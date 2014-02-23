@@ -20,6 +20,7 @@
 #include "Compressor/private/consts.h"
 
 #include <vector>
+#include <memory>
 
 typedef std::vector<unsigned char> dataT;
 
@@ -56,12 +57,6 @@ public:
   void recordCRC();
 
 private:
-  dataT *data;
-  uint32_t dataSize;
-  uint32_t nBytesToRead;
-  DataBlockHeader *header;
-  dataT *outBlock;
-  bool recoveryMode;
-
-  uint32_t calcCRC();
+  struct Private;
+  std::unique_ptr<Private> d;
 };

@@ -15,21 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef CODEC_HUFF_H
-#define	CODEC_HUFF_H
+#pragma once
 
-#include "../../../DataBlock/dataBlock.h"
-#include "../../codecAbstract.h"
+#include "divsuf/divsufsort.h"
+#include "Compressor/Codec/codecAbstract.h"
 
-class Codec_HUFF : public virtual Codec_abstract {
+class DataBlock;
+
+class Codec_BWT : public virtual Codec_abstract {
 public:
-  Codec_HUFF();
-  virtual ~Codec_HUFF();
+  Codec_BWT();
+  ~Codec_BWT();
 
-  void decode_HUFF(DataBlock* inData);
-  void encode_HUFF(DataBlock* inData);
+  void encode_BWT(DataBlock* inData);
+  void decode_BWT(DataBlock* inData);
 
 private:
+  std::vector <int32_t> SA;
 };
-
-#endif	/* CODEC_HUFF_H */

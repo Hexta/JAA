@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 
 project("JAA")
 
-cmake_policy(SET CMP0020 NEW)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -ggdb -Wall -Wextra")
@@ -18,13 +15,11 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -g -fno-omit-frame-pointer -Wall -Wextra -pedantic -Weverything -Wnosystem-headers")
 endif()
 
+set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets REQUIRED)
-add_definitions(${QT5_DEFINITIONS})
-
 
 add_subdirectory(GUI)
 add_subdirectory(Compressor)
-
 
 include_directories(${CMAKE_SOURCE_DIR})
 
@@ -32,13 +27,11 @@ set(${PROJECT_NAME}_SRC main.cpp)
 
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 
-qt5_use_modules(${PROJECT_NAME} Widgets Gui Core)
-
 target_link_libraries(${PROJECT_NAME}
-    ${QT_LIBRARIES}
+	Qt5::Widgets
     ${PROJECT_NAME}_Face
     ${PROJECT_NAME}_compressor
     ${PROJECT_NAME}_Codec
 )
 
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_face)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_Face)

@@ -801,10 +801,12 @@ ss_swapmerge(const uint8_t *T, const int32_t *PA,
       if (stack.empty())
         return;
 
-      first = stack.top().a;
-      middle = stack.top().b;
-      last = stack.top().c;
-      check = stack.top().d;
+	  auto const& stackTop = stack.top();
+
+      first = stackTop.a;
+	  middle = stackTop.b;
+	  last = stackTop.c;
+	  check = stackTop.d;
       stack.pop();
 
       continue;

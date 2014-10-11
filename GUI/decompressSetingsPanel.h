@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #ifndef DECOMPRESSSETTINGSPANEL_H
-#define	DECOMPRESSSETTINGSPANEL_H
+#define DECOMPRESSSETTINGSPANEL_H
 
 #include "Compressor/compressor.h"
 
@@ -25,28 +25,26 @@
 class QCheckBox;
 
 class DecompressSettingsPanel : public QWidget {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DecompressSettingsPanel();
-  virtual ~DecompressSettingsPanel();
+    DecompressSettingsPanel();
+    virtual ~DecompressSettingsPanel();
 
 public slots:
-  void set(bool keepBroken);
+    void set(bool keepBroken);
 
 signals:
-  void settingsChanged(bool keepBroken);
-  void resetToDefaults(void);
+    void settingsChanged(bool keepBroken);
+    void resetToDefaults(void);
 
 private:
-  QCheckBox *keepBrokenFilesCheckbox;
+    QCheckBox* keepBrokenFilesCheckbox;
 
-  void setupWidgetsConnections();
+    void setupWidgetsConnections();
 
 private slots:
-  void get();
-
+    void get();
 };
 
-#endif	/* DECOMPRESSSETTINGSPANEL_H */
-
+#endif /* DECOMPRESSSETTINGSPANEL_H */

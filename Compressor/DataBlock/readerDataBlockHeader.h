@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -26,15 +26,14 @@ class DataBlockHeader;
 
 class ReaderDataBlockHeader {
 public:
-  ReaderDataBlockHeader();
+    ReaderDataBlockHeader();
 
-  ReaderDataBlockHeader(const ReaderDataBlockHeader& orig);
+    ReaderDataBlockHeader(const ReaderDataBlockHeader& orig);
 
-  virtual ~ReaderDataBlockHeader();
+    virtual ~ReaderDataBlockHeader();
 
-  JAA::FileIOResult read(DataBlockHeader * outHeader,
-    QFile &in, bool searchHeader = false);
+    JAA::FileIOResult read(DataBlockHeader* outHeader, QFile& in, bool searchHeader = false);
 
 private:
-  bool find(DataBlockHeader *outHeader, QFile &fin);
+    bool find(DataBlockHeader* outHeader, QFile& fin);
 };

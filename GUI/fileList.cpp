@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -20,121 +20,112 @@
 #include "Compressor/compressor.h"
 
 FileList::FileList() {
-  init();
-  setColumnWidth(0, 320);
-  setColumnWidth(1, 90);
+    init();
+    setColumnWidth(0, 320);
+    setColumnWidth(1, 90);
 }
 
-FileList::~FileList() { }
-
-void
-FileList::init() {
-  QTableWidget::clear();
-  initTable(0, 2);
+FileList::~FileList() {
 }
 
-void
-FileList::initTable(int rowCount, int columnCount) {
-  setRowCount(rowCount);
-  setColumnCount(columnCount);
-  setHorizontalHeaderLabels(QStringList() << "File Name" << "Status");
+void FileList::init() {
+    QTableWidget::clear();
+    initTable(0, 2);
 }
 
-void
-FileList::setFileList(const QStringList & fileList, QDir & basedir) {
-  initTable(fileList.count(), 2);
-
-  for (int i = 0; i < rowCount(); ++i) {
-    setItem(i, 0, new QTableWidgetItem(basedir.relativeFilePath(fileList[i])));
-    setItem(i, 1, new QTableWidgetItem());
-  }
+void FileList::initTable(int rowCount, int columnCount) {
+    setRowCount(rowCount);
+    setColumnCount(columnCount);
+    setHorizontalHeaderLabels(QStringList() << "File Name" << "Status");
 }
 
-void
-FileList::setFailFileStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *failedFileCell = getItemById(id);
+void FileList::setFileList(const QStringList& fileList, QDir& basedir) {
+    initTable(fileList.count(), 2);
 
-  failedFileCell->setBackgroundColor(Qt::red);
-  failedFileCell->setText(fileName);
-  item(failedFileCell->row(), failedFileCell->column() + 1)->setBackgroundColor(Qt::red);
-  item(failedFileCell->row(), failedFileCell->column() + 1)->setText("Fail!");
+    for (int i = 0; i < rowCount(); ++i) {
+        setItem(i, 0, new QTableWidgetItem(basedir.relativeFilePath(fileList[i])));
+        setItem(i, 1, new QTableWidgetItem());
+    }
 }
 
-void
-FileList::setProceedFileStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *proceedFileCell = getItemById(id);
+void FileList::setFailFileStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* failedFileCell = getItemById(id);
 
-  proceedFileCell->setBackgroundColor(Qt::yellow);
-  proceedFileCell->setText(fileName);
-  item(proceedFileCell->row(), proceedFileCell->column() + 1)->setBackgroundColor(Qt::yellow);
-  item(proceedFileCell->row(), proceedFileCell->column() + 1)->setText("Proceed...");
+    failedFileCell->setBackgroundColor(Qt::red);
+    failedFileCell->setText(fileName);
+    item(failedFileCell->row(), failedFileCell->column() + 1)->setBackgroundColor(Qt::red);
+    item(failedFileCell->row(), failedFileCell->column() + 1)->setText("Fail!");
 }
 
-void
-FileList::setSuccessFileStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *succesedFileCell = getItemById(id);
+void FileList::setProceedFileStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* proceedFileCell = getItemById(id);
 
-  succesedFileCell->setBackgroundColor(Qt::green);
-  succesedFileCell->setText(fileName);
-  item(succesedFileCell->row(), succesedFileCell->column() + 1)->setBackgroundColor(Qt::green);
-  item(succesedFileCell->row(), succesedFileCell->column() + 1)->setText("Success");
+    proceedFileCell->setBackgroundColor(Qt::yellow);
+    proceedFileCell->setText(fileName);
+    item(proceedFileCell->row(), proceedFileCell->column() + 1)->setBackgroundColor(Qt::yellow);
+    item(proceedFileCell->row(), proceedFileCell->column() + 1)->setText("Proceed...");
 }
 
-void
-FileList::setCancelledFilesStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *cancelledFileCell = getItemById(id);
+void FileList::setSuccessFileStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* succesedFileCell = getItemById(id);
 
-  cancelledFileCell->setText(fileName);
-  cancelledFileCell->setBackgroundColor(Qt::red);
-  item(cancelledFileCell->row(), cancelledFileCell->column() + 1)->setBackgroundColor(Qt::red);
-  item(cancelledFileCell->row(), cancelledFileCell->column() + 1)->setText("Cancelled");
+    succesedFileCell->setBackgroundColor(Qt::green);
+    succesedFileCell->setText(fileName);
+    item(succesedFileCell->row(), succesedFileCell->column() + 1)->setBackgroundColor(Qt::green);
+    item(succesedFileCell->row(), succesedFileCell->column() + 1)->setText("Success");
 }
 
-void
-FileList::setCorruptedFileStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *corruptedFileCell = getItemById(id);
+void FileList::setCancelledFilesStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* cancelledFileCell = getItemById(id);
 
-  corruptedFileCell->setText(fileName);
-  corruptedFileCell->setBackgroundColor(Qt::red);
-  item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setBackgroundColor(Qt::red);
-  item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setText("Corrupted!");
+    cancelledFileCell->setText(fileName);
+    cancelledFileCell->setBackgroundColor(Qt::red);
+    item(cancelledFileCell->row(), cancelledFileCell->column() + 1)->setBackgroundColor(Qt::red);
+    item(cancelledFileCell->row(), cancelledFileCell->column() + 1)->setText("Cancelled");
 }
 
-void
-FileList::setGoodFileStatus(const QString &fileName, unsigned int id) {
-  QTableWidgetItem *corruptedFileCell = getItemById(id);
+void FileList::setCorruptedFileStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* corruptedFileCell = getItemById(id);
 
-  corruptedFileCell->setText(fileName);
-  corruptedFileCell->setBackgroundColor(Qt::green);
-  item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setBackgroundColor(Qt::green);
-  item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setText("Good");
+    corruptedFileCell->setText(fileName);
+    corruptedFileCell->setBackgroundColor(Qt::red);
+    item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setBackgroundColor(Qt::red);
+    item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setText("Corrupted!");
 }
 
-void
-FileList::showInfo(CTCompressorStatus::ErrorCode error, QString fileName,
-    unsigned int id) {
-  if (fileName.isEmpty())
-    return;
+void FileList::setGoodFileStatus(const QString& fileName, unsigned int id) {
+    QTableWidgetItem* corruptedFileCell = getItemById(id);
 
-  switch (error) {
-  case CTCompressorStatus::INPUT_FILE_OPEN_ERROR:
-    setFailFileStatus(fileName, id);
-    break;
-  case CTCompressorStatus::SUCCESS:
-    setSuccessFileStatus(fileName, id);
-    break;
-  case CTCompressorStatus::PROCEED:
-    setProceedFileStatus(fileName, id);
-    break;
-  case CTCompressorStatus::INPUT_FILE_CORRUPTED:
-    setCorruptedFileStatus(fileName, id);
-    break;
-  case CTCompressorStatus::INPUT_FILE_UNCORRUPTED:
-    setGoodFileStatus(fileName, id);
-    break;
-  case CTCompressorStatus::CANCELLED:
-    setCancelledFilesStatus(fileName, id);
-    break;
-  default: break;
-  }
+    corruptedFileCell->setText(fileName);
+    corruptedFileCell->setBackgroundColor(Qt::green);
+    item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setBackgroundColor(Qt::green);
+    item(corruptedFileCell->row(), corruptedFileCell->column() + 1)->setText("Good");
+}
+
+void FileList::showInfo(CTCompressorStatus::ErrorCode error, QString fileName, unsigned int id) {
+    if (fileName.isEmpty())
+        return;
+
+    switch (error) {
+        case CTCompressorStatus::INPUT_FILE_OPEN_ERROR:
+            setFailFileStatus(fileName, id);
+            break;
+        case CTCompressorStatus::SUCCESS:
+            setSuccessFileStatus(fileName, id);
+            break;
+        case CTCompressorStatus::PROCEED:
+            setProceedFileStatus(fileName, id);
+            break;
+        case CTCompressorStatus::INPUT_FILE_CORRUPTED:
+            setCorruptedFileStatus(fileName, id);
+            break;
+        case CTCompressorStatus::INPUT_FILE_UNCORRUPTED:
+            setGoodFileStatus(fileName, id);
+            break;
+        case CTCompressorStatus::CANCELLED:
+            setCancelledFilesStatus(fileName, id);
+            break;
+        default:
+            break;
+    }
 }

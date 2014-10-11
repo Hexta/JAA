@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #ifndef COMPRESSSETTINGSPANEL_H
-#define	COMPRESSSETTINGSPANEL_H
+#define COMPRESSSETTINGSPANEL_H
 
 #include "Compressor/compressor.h"
 
@@ -26,39 +26,35 @@ class QSpinBox;
 class QComboBox;
 
 class CompressSettingsPanel : public QWidget {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  CompressSettingsPanel();
-  virtual ~CompressSettingsPanel();
+    CompressSettingsPanel();
+    virtual ~CompressSettingsPanel();
 
 public slots:
-  void set(unsigned int blockSize,
-      QList< Compressor::CoderTypes> compressSequence);
+    void set(unsigned int blockSize, QList<Compressor::CoderTypes> compressSequence);
 
 signals:
-  void settingsChanged(unsigned int blockSize,
-      QList< Compressor::CoderTypes> compressSequence);
-  void resetToDefaults(void);
+    void settingsChanged(unsigned int blockSize, QList<Compressor::CoderTypes> compressSequence);
+    void resetToDefaults(void);
 
 private:
-  QSpinBox* blockSizeSpinBox;
-  QComboBox *encoder1ComboBox;
-  QComboBox *encoder2ComboBox;
-  QComboBox *encoder3ComboBox;
-  QComboBox *encoder4ComboBox;
-  QComboBox *encoder5ComboBox;
-  QComboBox *encoder6ComboBox;
-  QComboBox *encoder7ComboBox;
-  QComboBox *encoder8ComboBox;
+    QSpinBox* blockSizeSpinBox;
+    QComboBox* encoder1ComboBox;
+    QComboBox* encoder2ComboBox;
+    QComboBox* encoder3ComboBox;
+    QComboBox* encoder4ComboBox;
+    QComboBox* encoder5ComboBox;
+    QComboBox* encoder6ComboBox;
+    QComboBox* encoder7ComboBox;
+    QComboBox* encoder8ComboBox;
 
-  void setupWidgetsConnections();
+    void setupWidgetsConnections();
 
 private slots:
-  void get();
-  void disableEncoders();
-
+    void get();
+    void disableEncoders();
 };
 
-#endif	/* COMPRESSSETTINGSPANEL_H */
-
+#endif /* COMPRESSSETTINGSPANEL_H */

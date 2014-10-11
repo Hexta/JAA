@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -22,45 +22,44 @@
 #include <QMainWindow>
 
 namespace Ui {
-
 class face;
 }
 
 class Face : public QMainWindow {
-  Q_OBJECT
-public:
+    Q_OBJECT
 
-  Face();
-  virtual ~Face();
+public:
+    Face();
+    virtual ~Face();
 
 public slots:
-  void about();
-  void selectFilesToCompress();
-  void selectFileToDecompress();
-  void compress();
-  void decompress();
-  void listArchiveContents();
-  void displayCompressStatus(int progress, QString fileName, float speed);
-  void displayDecompressStatus(int progress, QString fileName, float speed);
-  void displayListStatus(int progress, QString fileName, float speed);
-  void showInfo(CTCompressorStatus::ErrorCode error, QString fileName);
-  void showCompressStatInfo(Compressor::Stat stat);
-  void showDecompressStatInfo(Compressor::Stat stat);
-  void setCompressSettings(unsigned int blockSize, QList< Compressor::CoderTypes> compressSequence);
-  void setDecompressSettings(bool keepBrokenFiles);
+    void about();
+    void selectFilesToCompress();
+    void selectFileToDecompress();
+    void compress();
+    void decompress();
+    void listArchiveContents();
+    void displayCompressStatus(int progress, QString fileName, float speed);
+    void displayDecompressStatus(int progress, QString fileName, float speed);
+    void displayListStatus(int progress, QString fileName, float speed);
+    void showInfo(CTCompressorStatus::ErrorCode error, QString fileName);
+    void showCompressStatInfo(Compressor::Stat stat);
+    void showDecompressStatInfo(Compressor::Stat stat);
+    void setCompressSettings(unsigned int blockSize, QList<Compressor::CoderTypes> compressSequence);
+    void setDecompressSettings(bool keepBrokenFiles);
 
 private:
-  struct Private;
+    struct Private;
 
-  std::unique_ptr<Private> d;
+    std::unique_ptr<Private> d;
 
-  void createActions();
-  void createToolBars();
-  void createMenus();
-  void setupWidgetsConnections();
-  void activateCompressMode();
-  void activateDecompressMode();
+    void createActions();
+    void createToolBars();
+    void createMenus();
+    void setupWidgetsConnections();
+    void activateCompressMode();
+    void activateDecompressMode();
 
 private slots:
-  void initSettings();
+    void initSettings();
 };

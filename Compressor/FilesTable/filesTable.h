@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,11 +16,11 @@
  ******************************************************************************/
 
 #ifndef DATABLOCKSTABLE_H
-#define	DATABLOCKSTABLE_H
+#define DATABLOCKSTABLE_H
 
 #include "fileBlocksInfo.h"
 
-#include <stdint.h>
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
@@ -31,30 +31,30 @@ class DataBlockHeader;
 
 class FilesTable {
 public:
-  struct FileInfo {
-    string fileName;
-    bool corrupted;
-  };
+    struct FileInfo {
+        string fileName;
+        bool corrupted;
+    };
 
-  FilesTable();
+    FilesTable();
 
-  FilesTable(const FilesTable&);
-  virtual ~FilesTable();
+    FilesTable(const FilesTable&);
+    virtual ~FilesTable();
 
-  JAA::FileBlockResult add(DataBlockHeader * inHeader, unsigned int id = 0);
-  void remove(DataBlockHeader * inHeader);
-  map< string, vector <uint32_t> > & getNonCompleteFilesBlocksInfo();
-  const vector<string>& getNonCompleteFilesNames();
-  vector<FileInfo>& getArchiveContent();
-  void clean();
-  unsigned int getId(DataBlockHeader * inHeader) const;
-  unsigned int getId(const string& fileName) const;
+    JAA::FileBlockResult add(DataBlockHeader* inHeader, unsigned int id = 0);
+    void remove(DataBlockHeader* inHeader);
+    map<string, vector<uint32_t> >& getNonCompleteFilesBlocksInfo();
+    const vector<string>& getNonCompleteFilesNames();
+    vector<FileInfo>& getArchiveContent();
+    void clean();
+    unsigned int getId(DataBlockHeader* inHeader) const;
+    unsigned int getId(const string& fileName) const;
 
 private:
-  map< string, FileBlocksInfo > fileBlocksTable; //сведения о полученных блоках файла
-  map< string, vector <uint32_t> > brokenFiletable;
-  vector <string> brokenFilesNames;
-  vector<FileInfo> archiveContent;
+    map<string, FileBlocksInfo> fileBlocksTable; // information about received data blocks
+    map<string, vector<uint32_t> > brokenFiletable;
+    vector<string> brokenFilesNames;
+    vector<FileInfo> archiveContent;
 };
 
-#endif	/* DATABLOCKSTABLE_H */
+#endif /* DATABLOCKSTABLE_H */

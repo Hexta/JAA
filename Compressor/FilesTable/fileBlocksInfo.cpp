@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -26,50 +26,54 @@ using JAA::FileBlockResult;
 
 struct FileBlocksInfo::Private {
 public:
-    Private() {};
-    boost::dynamic_bitset<> blocks; //array of block recieving status: false - recieved, true - not
+    Private() {
+    };
+    boost::dynamic_bitset<> blocks; // array of block receive status: false - received successfully, true - not
 };
 
-FileBlocksInfo::FileBlocksInfo(const FileBlocksInfo& orig) : blocksCount(0),
-    nonRecievedblocks(), id(), d(new Private()) {
+FileBlocksInfo::FileBlocksInfo(const FileBlocksInfo& orig) :
+    blocksCount(0),
+    nonRecievedblocks(),
+    id(),
+    d(new Private()) {
     d->blocks.resize(orig.d->blocks.size());
     d->blocks = orig.d->blocks;
     blocksCount = orig.blocksCount;
     id = orig.id;
 }
 
-FileBlocksInfo::FileBlocksInfo(const uint32_t _totalBlocks, unsigned int _id)
-: blocksCount(_totalBlocks), nonRecievedblocks(), id(_id), d(new Private()) {
+FileBlocksInfo::FileBlocksInfo(const uint32_t _totalBlocks, unsigned int _id) :
+    blocksCount(_totalBlocks),
+    nonRecievedblocks(),
+    id(_id),
+    d(new Private()) {
     d->blocks.resize(_totalBlocks, true);
     nonRecievedblocks.reserve(_totalBlocks);
 }
 
-FileBlocksInfo::~FileBlocksInfo() { }
+FileBlocksInfo::~FileBlocksInfo() {
+}
 
-bool
-FileBlocksInfo::complete() {
+bool FileBlocksInfo::complete() {
     return d->blocks.none();
 }
 
-unsigned int
-FileBlocksInfo::getId() const {
+unsigned int FileBlocksInfo::getId() const {
     return id;
 }
 
-uint32_t
-FileBlocksInfo::getTotalBlocks() {
+uint32_t FileBlocksInfo::getTotalBlocks() {
     return blocksCount;
 }
 
-JAA::FileBlockResult
-FileBlocksInfo::setRecievedBlock(uint32_t blockN) {
+JAA::FileBlockResult FileBlocksInfo::setRecievedBlock(uint32_t blockN) {
     if (blockN > blocksCount)
         return FileBlockResult::BLOCK_OUT_OF_RANGE;
     if (!d->blocks[blockN])
         return FileBlockResult::BLOCK_ALREADY_RECIEVED;
     d->blocks[blockN] = false;
 
-    if (blocksCount == 1)/* when first block is the last too*/
+    if (blocksCount == 1) /* when first block is the last too*/
         return FileBlockResult::FIRST_AND_LAST_RECIEVED_BLOCK;
 
     if (complete())
@@ -77,8 +81,7 @@ FileBlocksInfo::setRecievedBlock(uint32_t blockN) {
     return FileBlockResult::OK;
 }
 
-vector<uint32_t> &
-FileBlocksInfo::getNonRecievedBlocksInfo() {
+vector<uint32_t>& FileBlocksInfo::getNonRecievedBlocksInfo() {
     nonRecievedblocks.clear();
     if (d->blocks.any()) {
         for (unsigned int i = 0; i < d->blocks.size(); ++i) {

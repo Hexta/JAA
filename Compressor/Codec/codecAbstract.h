@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -25,21 +25,21 @@ class DataBlockHeader;
 
 class Codec_abstract {
 public:
-  Codec_abstract();
-  virtual ~Codec_abstract() = 0;
+    Codec_abstract();
+    virtual ~Codec_abstract() = 0;
 
 protected:
-  dataT buffer;
-  unsigned char *data;
-  unsigned int decodedDataSize;
-  unsigned int encodedDataSize;
-  uint32_t codecParams;
+    dataT buffer;
+    unsigned char* data;
+    unsigned int decodedDataSize;
+    unsigned int encodedDataSize;
+    uint32_t codecParams;
 
-  void initDecoder(DataBlock * in_block);
-  void initEncoder(DataBlock * in_block);
-  void recordOutHeader(DataBlockHeader *outHeader, uint64_t id);
+    void initDecoder(DataBlock* in_block);
+    void initEncoder(DataBlock* in_block);
+    void recordOutHeader(DataBlockHeader* outHeader, uint64_t id);
 
 private:
-  Codec_abstract(const Codec_abstract&);
-  void operator=(const Codec_abstract&);
+    Codec_abstract(const Codec_abstract&);
+    void operator=(const Codec_abstract&);
 };

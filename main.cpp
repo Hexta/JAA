@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -19,14 +19,13 @@
 
 #include <QApplication>
 
-int
-main(int argc, char *argv[]) {
-  QApplication app(argc, argv);
+int main(int argc, char* argv[]) {
+    QApplication app(argc, argv);
 
-  Face * mainw = new Face();
+    Face* mainw = new Face();
 
-  mainw->setWindowTitle(QObject::tr("Just another archiver"));
-  mainw->show();
+    mainw->setWindowTitle(QObject::tr("Just another archiver"));
+    mainw->show();
 
-  return app.exec();
+    return app.exec();
 }

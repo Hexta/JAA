@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 #ifndef COMPRESSORTHREAD_H
-#define	COMPRESSORTHREAD_H
+#define COMPRESSORTHREAD_H
 
 #include "Compressor/compressor.h"
 #include "Compressor/FilesTable/filesTable.h"
@@ -30,54 +30,57 @@ class CompressorThread;
 
 class CTCompressorStatus : public CompressorStatus {
 public:
-  CTCompressorStatus();
-  void showProgress(float progress, const QString&, float speed);
-  void showInfo(ErrorCode errorCode, const QString &currFileName = "", unsigned int id = 0);
-  void setCompressorThread(CompressorThread *comprThread);
+    CTCompressorStatus();
+    void showProgress(float progress, const QString&, float speed);
+    void showInfo(ErrorCode errorCode, const QString& currFileName = "", unsigned int id = 0);
+    void setCompressorThread(CompressorThread* comprThread);
 
 private:
-  CompressorThread *comprThread;
+    CompressorThread* comprThread;
 };
 
 class CompressorThread : public QThread {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  CompressorThread();
-  virtual ~CompressorThread();
+    CompressorThread();
+    virtual ~CompressorThread();
 
-  void run();
-  void showProgress(float progress, const QString &fileName, float speed);
-  void showInfo(CompressorStatus::ErrorCode errorCode, const QString &fileName, unsigned int id);
-  void initCompress(const QStringList &iFileNames, const QString &destFileName, unsigned int blocksize, const QDir &compressBaseDir, const QList< Compressor::CoderTypes> &compressSequence);
-  void initDecompress(const QString &iFileName, bool keepBroken = false);
-  void initList(const QString &iFileName);
-  void compress();
-  void decompress();
-  void list();
+    void run();
+    void showProgress(float progress, const QString& fileName, float speed);
+    void showInfo(CompressorStatus::ErrorCode errorCode, const QString& fileName, unsigned int id);
+    void initCompress(const QStringList& iFileNames,
+        const QString& destFileName,
+        unsigned int blocksize,
+        const QDir& compressBaseDir,
+        const QList<Compressor::CoderTypes>& compressSequence);
+    void initDecompress(const QString& iFileName, bool keepBroken = false);
+    void initList(const QString& iFileName);
+    void compress();
+    void decompress();
+    void list();
 
 public slots:
-  void stop();
+    void stop();
 
 signals:
-  void progressChanged(int progress, QString fileName, float speed);
-  void info(CTCompressorStatus::ErrorCode error, QString fileName, unsigned int id);
-  void statInfo(Compressor::Stat stat);
+    void progressChanged(int progress, QString fileName, float speed);
+    void info(CTCompressorStatus::ErrorCode error, QString fileName, unsigned int id);
+    void statInfo(Compressor::Stat stat);
 
 private:
-  QStringList iFileNames;
-  QString iFileName;
-  QString destFileName;
-  unsigned int blocksize;
-  QDir compressBaseDir;
-  bool keepBroken;
-  QList< Compressor::CoderTypes> compressSequence;
-  CTCompressorStatus *status;
+    QStringList iFileNames;
+    QString iFileName;
+    QString destFileName;
+    unsigned int blocksize;
+    QDir compressBaseDir;
+    bool keepBroken;
+    QList<Compressor::CoderTypes> compressSequence;
+    CTCompressorStatus* status;
 
-  enum Mode {
-    NONE, COMPRESSING, DECOMPRESSING, LIST
-  } runMode;
+    enum Mode {
+        NONE, COMPRESSING, DECOMPRESSING, LIST
+    } runMode;
 };
 
-#endif	/* COMPRESSORTHREAD_H */
-
+#endif /* COMPRESSORTHREAD_H */

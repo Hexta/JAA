@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,13 +16,13 @@
  ******************************************************************************/
 
 #ifndef FILEBLOCKSINFO_H
-#define	FILEBLOCKSINFO_H
+#define FILEBLOCKSINFO_H
 
 #include "../private/consts.h"
 
 #include <memory>
-#include <string.h>
-#include <stdint.h>
+#include <cstring>
+#include <cstdint>
 #include <vector>
 
 using std::vector;
@@ -44,10 +44,10 @@ public:
 private:
     uint32_t blocksCount;
     vector<uint32_t> nonRecievedblocks;
-    unsigned int id; //file`s ID in archive
+    unsigned int id; // file`s ID in archive
 
     struct Private;
     std::unique_ptr<Private> d;
 };
 
-#endif	/* FILEBLOCKSINFO_H */
+#endif /* FILEBLOCKSINFO_H */

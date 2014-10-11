@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -17,33 +17,33 @@
 
 #include "codecBWT.h"
 
-Codec_BWT::Codec_BWT() { }
-
-Codec_BWT::~Codec_BWT() { }
-
-void
-Codec_BWT::encode_BWT(DataBlock* inData) {
-  initEncoder(inData);
-
-  encodedDataSize = decodedDataSize;
-
-  buffer.reserve(encodedDataSize);
-
-  SA.reserve(decodedDataSize);
-
-  codecParams = divbwt(data, buffer.data(), SA.data(), decodedDataSize);
-
-  inData->setData(buffer.data(), encodedDataSize);
-
-  recordOutHeader(inData->getHeader(), JAA::CodecID::BWT_ID);
+Codec_BWT::Codec_BWT() {
 }
 
-void
-Codec_BWT::decode_BWT(DataBlock* inData) {
-  initDecoder(inData);
+Codec_BWT::~Codec_BWT() {
+}
 
-  SA.reserve(encodedDataSize);
-  inverse_bw_transform(data, data, SA.data(), encodedDataSize, codecParams);
+void Codec_BWT::encode_BWT(DataBlock* inData) {
+    initEncoder(inData);
 
-  inData->setBlock(data);
+    encodedDataSize = decodedDataSize;
+
+    buffer.reserve(encodedDataSize);
+
+    SA.reserve(decodedDataSize);
+
+    codecParams = divbwt(data, buffer.data(), SA.data(), decodedDataSize);
+
+    inData->setData(buffer.data(), encodedDataSize);
+
+    recordOutHeader(inData->getHeader(), JAA::CodecID::BWT_ID);
+}
+
+void Codec_BWT::decode_BWT(DataBlock* inData) {
+    initDecoder(inData);
+
+    SA.reserve(encodedDataSize);
+    inverse_bw_transform(data, data, SA.data(), encodedDataSize, codecParams);
+
+    inData->setBlock(data);
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,43 +16,40 @@
  ******************************************************************************/
 
 #ifndef STATINFOW_H
-#define	STATINFOW_H
+#define STATINFOW_H
 
 #include "Compressor/compressor.h"
 
 #include <QDialog>
 
 class QTableWidget;
-
 class QLabel;
 
 class StatInfoW : public QDialog {
-
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  struct StatInfo {
-    QList< Compressor::CoderTypes> compressSequence;
-    unsigned int blockSize;
-    off_t inputSize;
-    off_t outputSize;
-    float speed;
-  };
-  StatInfoW(QWidget *parent = NULL);
-  virtual ~StatInfoW();
+    struct StatInfo {
+        QList<Compressor::CoderTypes> compressSequence;
+        unsigned int blockSize;
+        off_t inputSize;
+        off_t outputSize;
+        float speed;
+    };
+    StatInfoW(QWidget* parent = NULL);
+    virtual ~StatInfoW();
 
 public slots:
-  void showInfo(StatInfo info);
+    void showInfo(StatInfo info);
 
 private:
-  QLabel *blockSizeLabel;
-  QLabel *inputDataSizeLabel;
-  QLabel *outputDataSizeLabel;
-  QLabel *ratioLabel;
-  QLabel *speedLabel;
-  QLabel *encodingSequenceLabel;
-  QLabel *encodingSequenceColumnLabel;
+    QLabel* blockSizeLabel;
+    QLabel* inputDataSizeLabel;
+    QLabel* outputDataSizeLabel;
+    QLabel* ratioLabel;
+    QLabel* speedLabel;
+    QLabel* encodingSequenceLabel;
+    QLabel* encodingSequenceColumnLabel;
 };
 
-#endif	/* STATINFOW_H */
-
+#endif /* STATINFOW_H */

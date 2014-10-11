@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -22,34 +22,31 @@
 #include <QPushButton>
 
 DecompressSettingsPanel::DecompressSettingsPanel() {
-  keepBrokenFilesCheckbox = new QCheckBox("Keep broken files", this);
-  QGridLayout *grid = new QGridLayout;
+    keepBrokenFilesCheckbox = new QCheckBox("Keep broken files", this);
+    QGridLayout* grid = new QGridLayout;
 
-  QPushButton *resetToDefaultsButton = new QPushButton(tr("Reset To Defaults"));
-  connect(resetToDefaultsButton, SIGNAL(clicked()), this, SIGNAL(resetToDefaults()));
+    QPushButton* resetToDefaultsButton = new QPushButton(tr("Reset To Defaults"));
+    connect(resetToDefaultsButton, SIGNAL(clicked()), this, SIGNAL(resetToDefaults()));
 
-  grid->addWidget(keepBrokenFilesCheckbox, 0, 0, Qt::AlignTop);
-  grid->addWidget(resetToDefaultsButton, 1, 0, Qt::AlignBottom);
+    grid->addWidget(keepBrokenFilesCheckbox, 0, 0, Qt::AlignTop);
+    grid->addWidget(resetToDefaultsButton, 1, 0, Qt::AlignBottom);
 
-  setLayout(grid);
-  setupWidgetsConnections();
+    setLayout(grid);
+    setupWidgetsConnections();
 }
 
-DecompressSettingsPanel::~DecompressSettingsPanel() { }
-
-void
-DecompressSettingsPanel::get() {
-  bool keepBroken = keepBrokenFilesCheckbox->isChecked();
-  emit settingsChanged(keepBroken);
+DecompressSettingsPanel::~DecompressSettingsPanel() {
 }
 
-void
-DecompressSettingsPanel::set(bool keepBroken) {
-  keepBrokenFilesCheckbox->setChecked(keepBroken);
+void DecompressSettingsPanel::get() {
+    bool keepBroken = keepBrokenFilesCheckbox->isChecked();
+    emit settingsChanged(keepBroken);
 }
 
-void
-DecompressSettingsPanel::setupWidgetsConnections() {
-  connect(keepBrokenFilesCheckbox, SIGNAL(stateChanged(int)), this, SLOT(get()));
+void DecompressSettingsPanel::set(bool keepBroken) {
+    keepBrokenFilesCheckbox->setChecked(keepBroken);
 }
 
+void DecompressSettingsPanel::setupWidgetsConnections() {
+    connect(keepBrokenFilesCheckbox, SIGNAL(stateChanged(int)), this, SLOT(get()));
+}

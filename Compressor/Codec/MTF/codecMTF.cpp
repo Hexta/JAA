@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -17,67 +17,65 @@
 
 #include "codecMTF.h"
 
-Codec_MTF::Codec_MTF() { }
-
-Codec_MTF::~Codec_MTF() { }
-
-void
-Codec_MTF::decode_MTF(DataBlock* inData) {
-  initDecoder(inData);
-
-  buffer.reserve(decodedDataSize);
-  buffer.resize(encodedDataSize);
-
-  init_mtf(256);
-
-  for (unsigned int i = 0; i < encodedDataSize; ++i)
-    buffer[i] = get_mtf_c(data[i]);
-
-  inData->setBlock(buffer.data());
+Codec_MTF::Codec_MTF() {
 }
 
-void
-Codec_MTF::encode_MTF(DataBlock* inData) {
-  initEncoder(inData);
-
-  encodedDataSize = decodedDataSize;
-
-  buffer.reserve(encodedDataSize);
-  buffer.resize(decodedDataSize);
-
-  init_mtf(256);
-
-  for (unsigned int i = 0; i < decodedDataSize; ++i)
-    buffer[i] = mtf(data[i]);
-
-  inData->setData(buffer.data(), encodedDataSize);
-
-  recordOutHeader(inData->getHeader(), JAA::CodecID::MTF_ID);
+Codec_MTF::~Codec_MTF() {
 }
 
-void
-Codec_MTF::init_mtf(int tsize) {
-  p =
-      head =
-      tail = NULL;
+void Codec_MTF::decode_MTF(DataBlock* inData) {
+    initDecoder(inData);
 
-  table.resize(tsize + 1);
-  /* initialize the list. */
-  for (int i = tsize; i-- > 0;) {
-    table[i].c = i;
- 
-    if (i >=1) {
-        table[i].next = &table[i - 1];
+    buffer.reserve(decodedDataSize);
+    buffer.resize(encodedDataSize);
+
+    init_mtf(256);
+
+    for (unsigned int i = 0; i < encodedDataSize; ++i)
+        buffer[i] = get_mtf_c(data[i]);
+
+    inData->setBlock(buffer.data());
+}
+
+void Codec_MTF::encode_MTF(DataBlock* inData) {
+    initEncoder(inData);
+
+    encodedDataSize = decodedDataSize;
+
+    buffer.reserve(encodedDataSize);
+    buffer.resize(decodedDataSize);
+
+    init_mtf(256);
+
+    for (unsigned int i = 0; i < decodedDataSize; ++i)
+        buffer[i] = mtf(data[i]);
+
+    inData->setData(buffer.data(), encodedDataSize);
+
+    recordOutHeader(inData->getHeader(), JAA::CodecID::MTF_ID);
+}
+
+void Codec_MTF::init_mtf(int tsize) {
+    p =
+        head =
+            tail = NULL;
+
+    table.resize(tsize + 1);
+    /* initialize the list. */
+    for (int i = tsize; i-- > 0;) {
+        table[i].c = i;
+
+        if (i >= 1) {
+            table[i].next = &table[i - 1];
+        }
+
+        if (i < tsize) {
+            table[i].prev = &table[i + 1];
+        }
     }
 
-    if (i < tsize)
-    {
-        table[i].prev = &table[i + 1];
-    }
-  }
-
-  table[tsize - 1].prev = NULL;
-  table[0].next = NULL;
-  head = &table[tsize - 1];
-  tail = &table[0];
+    table[tsize - 1].prev = NULL;
+    table[0].next = NULL;
+    head = &table[tsize - 1];
+    tail = &table[0];
 }

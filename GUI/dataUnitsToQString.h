@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2011-2013 Artur Molchanov <artur.molchanov@gmail.com>        *
+ * Copyright (c) 2011-2014 Artur Molchanov <artur.molchanov@gmail.com>        *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -16,20 +16,19 @@
  ******************************************************************************/
 
 #ifndef DATAUNITSTOQSTRING_H
-#define	DATAUNITSTOQSTRING_H
+#define DATAUNITSTOQSTRING_H
 
 #include <QString>
 
 class DataUnitsToQString {
 public:
-  DataUnitsToQString();
-  DataUnitsToQString(const DataUnitsToQString& orig);
-  virtual ~DataUnitsToQString();
-  static QString convertDataSize(off_t dataSize, int prec);
-  static QString convertDataSpeed(int dataSpeed, int prec);
+    DataUnitsToQString();
+    DataUnitsToQString(const DataUnitsToQString& orig);
+    virtual ~DataUnitsToQString();
+    static QString convertDataSize(off_t dataSize, int prec);
+    static QString convertDataSpeed(int dataSpeed, int prec);
 
 private:
 };
 
-#endif	/* DATAUNITSTOQSTRING_H */
-
+#endif /* DATAUNITSTOQSTRING_H */

@@ -89,10 +89,13 @@ stackPop(T1 *a, T1 *b, T2 *c, T3 *d, stack < T4 > *stack) {
   if (stack->empty())
     return -1;
 
-  *a = stack->top().a;
-  *b = stack->top().b;
-  *c = stack->top().c;
-  *d = stack->top().d;
+  auto const& stackTop = stack->top();
+
+  *a = stackTop.a;
+  *b = stackTop.b;
+  *c = stackTop.c;
+  *d = stackTop.d;
+
   stack->pop();
 
   return 0;
@@ -103,12 +106,14 @@ stackPop(int32_t const **a, int32_t **b, int32_t **c, int32_t *d, int32_t *e, ve
   if (stack->empty())
     return -1;
 
-  *a = stack->back().a;
-  *b = stack->back().b;
-  *c = stack->back().c;
-  *d = stack->back().d;
-  *d = stack->back().d;
-  *e = stack->back().e;
+  auto const& stackTop = stack->back();
+
+  *a = stackTop.a;
+  *b = stackTop.b;
+  *c = stackTop.c;
+  *d = stackTop.d;
+  *e = stackTop.e;
+
   stack->pop_back();
 
   return 0;
